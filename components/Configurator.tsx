@@ -5,6 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Check, Clock, Users, ArrowRight, X } from "lucide-react";
 import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
+interface DbProduct {
+  id: string;
+  name: string;
+  price: string | number;
+  description: string;
+}
+
+interface InvoiceItemInsert {
+  invoice_id: string;
+  product_id: string;
+  name: string;
+  price: number;
+  qty: number;
+}
+
 export default function Configurator() {
   const [hours, setHours] = useState(5);
   const [guests, setGuests] = useState(50);
@@ -33,7 +48,7 @@ export default function Configurator() {
   const [errorMessage, setErrorMessage] = useState("");
 
   // Database products state
-  const [productsList, setProductsList] = useState<any[]>([]);
+  const [productsList, setProductsList] = useState<DbProduct[]>([]);
   const [rates, setRates] = useState({
     waiter: 25000,
     chef: 45000,
@@ -61,10 +76,10 @@ export default function Configurator() {
           .eq('unit', 'HORA');
 
         if (!error && data) {
-          setProductsList(data);
+          setProductsList(data as DbProduct[]);
           
           const matchedRates = { ...rates };
-          data.forEach((p: any) => {
+          data.forEach((p: DbProduct) => {
             const name = p.name.toLowerCase();
             const price = Number(p.price);
             if (name.includes('mesero')) matchedRates.waiter = price;
@@ -102,7 +117,7 @@ export default function Configurator() {
   const totalCost = waitersCost + chefsCost + utensilsCost + furnitureCost + spaceCost + cateringCost;
 
   // Format helper
-  const formatCOP = (num: number) => {
+  const formatCOP = (num: number): string => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
@@ -112,10 +127,10 @@ export default function Configurator() {
   };
 
   // Helper to validate Gantt times overlap
-  const validateAvailability = (date: string, time: string, duration: number) => {
+  const validateAvailability = (date: string, time: string, duration: number): { valid: boolean; conflictProduct?: string } => {
     if (!date || !time) return { valid: true };
 
-    const parseTimeToMin = (t: string) => {
+    const parseTimeToMin = (t: string): number => {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
     };
@@ -136,7 +151,7 @@ export default function Configurator() {
 
       if (!isSelected) continue;
 
-      let settings: any = {};
+      let settings: { occupiedSlots?: { date: string; time: string; duration: number }[]; description?: string } = {};
       try {
         settings = JSON.parse(p.description || '{}');
       } catch (e) {
@@ -231,7 +246,7 @@ export default function Configurator() {
       if (invError) throw invError;
 
       // Paso C: Insertar el Detalle del Item
-      const itemsToInsert: any[] = [];
+      const itemsToInsert: InvoiceItemInsert[] = [];
       
       productsList.forEach((p) => {
         const nameLower = p.name.toLowerCase();
@@ -281,7 +296,7 @@ export default function Configurator() {
         const product = productsList.find(p => p.id === item.product_id);
         if (!product) continue;
 
-        let settings: any = {};
+        let settings: { occupiedSlots?: { date: string; time: string; duration: number }[]; description?: string } = {};
         try {
           settings = JSON.parse(product.description || '{}');
         } catch (e) {
@@ -309,9 +324,10 @@ export default function Configurator() {
       }
 
       setIsBooked(true);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error procesando transacción de reserva:', err);
-      setErrorMessage(`Error: ${err.message || 'No se pudo completar la transacción.'}`);
+      const errorObj = err as Error;
+      setErrorMessage(`Error: ${errorObj.message || 'No se pudo completar la transacción.'}`);
     } finally {
       setIsSubmitLoading(false);
     }

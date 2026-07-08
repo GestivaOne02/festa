@@ -5,6 +5,13 @@ import { Check, ArrowRight } from "lucide-react";
 import { Service } from "@/constants/services";
 import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
+interface DbProduct {
+  id: string;
+  name: string;
+  price: string | number;
+  description: string;
+}
+
 export default function Services() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -26,8 +33,8 @@ export default function Services() {
           .eq('unit', 'HORA');
 
         if (!error && data) {
-          const mapped = data.map((item: any) => {
-            let descObj: any = {};
+          const mapped = (data as DbProduct[]).map((item: DbProduct) => {
+            let descObj: { description?: string; features?: string[]; imageUrl?: string } = {};
             try {
               descObj = JSON.parse(item.description || '{}');
             } catch (e) {
@@ -77,7 +84,7 @@ export default function Services() {
     },
   };
 
-  const formatCOP = (num: number) => {
+  const formatCOP = (num: number): string => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
@@ -85,7 +92,7 @@ export default function Services() {
     }).format(num);
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>): void => {
     const container = e.currentTarget;
     const scrollPosition = container.scrollLeft;
     if (servicesList.length === 0) return;
@@ -141,7 +148,7 @@ export default function Services() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              {servicesList.map((service: Service) => (
+              {servicesList.map((service: Service): JSX.Element => (
                 <motion.div
                   key={service.id}
                   variants={cardVariants}

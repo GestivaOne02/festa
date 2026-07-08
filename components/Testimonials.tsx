@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
 
-export default function Testimonials() {
-  interface Testimonial {
-    name: string;
-    event: string;
-    text: string;
-    rating: number;
-  }
+type Testimonial = {
+  name: string;
+  event: string;
+  text: string;
+  rating: number;
+};
 
+export default function Testimonials() {
   // Lista vacía para servir como plantilla (template). Añadir opiniones reales de clientes aquí.
   const testimonials: Testimonial[] = [];
 

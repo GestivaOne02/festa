@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export default function Gallery() {
-  interface GalleryImage {
-    url: string;
-    title: string;
-  }
+type GalleryImage = {
+  url: string;
+  title: string;
+};
 
+export default function Gallery() {
   // Lista vacía para servir como plantilla (template). Añadir imágenes reales aquí.
   const images: GalleryImage[] = [];
 
