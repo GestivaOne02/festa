@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log('✅ GestivaOne Factura Generada:', data);
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('Error interno al procesar la factura:', error);
