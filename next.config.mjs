@@ -14,6 +14,10 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    GESTIVA_SUPABASE_URL: process.env.GESTIVA_SUPABASE_URL,
+    GESTIVA_SUPABASE_ANON_KEY: process.env.GESTIVA_SUPABASE_ANON_KEY,
+  },
 };
 
 export default nextConfig;

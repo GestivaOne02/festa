@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Check, Clock, Users, ArrowRight, X } from "lucide-react";
+import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
 export default function Configurator() {
   const [hours, setHours] = useState(5);
@@ -25,17 +26,70 @@ export default function Configurator() {
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("");
 
+  // Reservation states
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingTime, setBookingTime] = useState("");
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Database products state
+  const [productsList, setProductsList] = useState<any[]>([]);
+  const [rates, setRates] = useState({
+    waiter: 25000,
+    chef: 45000,
+    utensil: 1500,
+    furniture: 8000,
+    space: 150000,
+    catering: 15000,
+  });
+
   // Mobile Wizard state
   const [step, setStep] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  // Rates in COP
-  const WAITER_RATE = 25000;
-  const CHEF_RATE = 45000;
-  const UTENSIL_RATE = 1500;
-  const FURNITURE_RATE = 8000; // per guest flat average
-  const SPACE_RATE = 150000;
-  const CATERING_RATE = 15000; // per guest flat
+  // Load products and dynamic rates on mount
+  useEffect(() => {
+    async function initDb() {
+      try {
+        const companyId = await getEnterpriseCompanyId();
+        if (!companyId) return;
+
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, price, description')
+          .eq('company_id', companyId)
+          .eq('unit', 'HORA');
+
+        if (!error && data) {
+          setProductsList(data);
+          
+          const matchedRates = { ...rates };
+          data.forEach((p: any) => {
+            const name = p.name.toLowerCase();
+            const price = Number(p.price);
+            if (name.includes('mesero')) matchedRates.waiter = price;
+            else if (name.includes('cocinero') || name.includes('chef')) matchedRates.chef = price;
+            else if (name.includes('vajilla') || name.includes('utensilio')) matchedRates.utensil = price;
+            else if (name.includes('mesa') || name.includes('mobiliario')) matchedRates.furniture = price;
+            else if (name.includes('lugar') || name.includes('salon') || name.includes('espacio')) matchedRates.space = price;
+            else if (name.includes('comida') || name.includes('catering')) matchedRates.catering = price;
+          });
+          setRates(matchedRates);
+        }
+      } catch (e) {
+        console.error('Error inicializando base de datos en cotizador:', e);
+      }
+    }
+    initDb();
+  }, []);
+
+  // Rates in COP (loaded from database state)
+  const WAITER_RATE = rates.waiter;
+  const CHEF_RATE = rates.chef;
+  const UTENSIL_RATE = rates.utensil;
+  const FURNITURE_RATE = rates.furniture; // per guest flat average
+  const SPACE_RATE = rates.space;
+  const CATERING_RATE = rates.catering; // per guest flat
 
   // Calculators
   const waitersCost = includeWaiters ? waiterCount * hours * WAITER_RATE : 0;
@@ -57,10 +111,209 @@ export default function Configurator() {
     }).format(num);
   };
 
-  const handleBookSubmit = (e: React.FormEvent) => {
+  // Helper to validate Gantt times overlap
+  const validateAvailability = (date: string, time: string, duration: number) => {
+    if (!date || !time) return { valid: true };
+
+    const parseTimeToMin = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    const newStart = parseTimeToMin(time);
+    const newEnd = newStart + duration * 60;
+
+    for (const p of productsList) {
+      const nameLower = p.name.toLowerCase();
+      // Only validate active toggled services
+      const isSelected = 
+        (nameLower.includes('mesero') && includeWaiters) ||
+        ((nameLower.includes('cocinero') || nameLower.includes('chef')) && includeChefs) ||
+        ((nameLower.includes('vajilla') || nameLower.includes('utensilio')) && includeUtensils) ||
+        ((nameLower.includes('mesa') || nameLower.includes('mobiliario')) && includeFurniture) ||
+        ((nameLower.includes('lugar') || nameLower.includes('salon') || nameLower.includes('espacio')) && includeSpace) ||
+        ((nameLower.includes('comida') || nameLower.includes('catering')) && includeCatering);
+
+      if (!isSelected) continue;
+
+      let settings: any = {};
+      try {
+        settings = JSON.parse(p.description || '{}');
+      } catch (e) {
+        continue;
+      }
+
+      const occupied = settings.occupiedSlots || [];
+      for (const slot of occupied) {
+        if (slot.date === date) {
+          const slotStart = parseTimeToMin(slot.time);
+          const slotEnd = slotStart + Number(slot.duration) * 60;
+
+          // Check overlap
+          if (newStart < slotEnd && slotStart < newEnd) {
+            return { valid: false, conflictProduct: p.name };
+          }
+        }
+      }
+    }
+
+    return { valid: true };
+  };
+
+  const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (userName && userPhone) {
+    if (!userName || !userPhone || !bookingDate || !bookingTime) {
+      setErrorMessage("Por favor, completa todos los campos.");
+      return;
+    }
+
+    setIsSubmitLoading(true);
+    setErrorMessage("");
+
+    try {
+      const companyId = await getEnterpriseCompanyId();
+      if (!companyId) {
+        setErrorMessage("Error de conexión: No se pudo conectar a la base de datos de GestivaOne.");
+        setIsSubmitLoading(false);
+        return;
+      }
+
+      // 1. Validar disponibilidad Gantt
+      const availability = validateAvailability(bookingDate, bookingTime, hours);
+      if (!availability.valid) {
+        setErrorMessage(`⚠️ Conflicto de Agenda: El servicio "${availability.conflictProduct}" ya está reservado en la fecha y horario seleccionados.`);
+        setIsSubmitLoading(false);
+        return;
+      }
+
+      // Paso A: Registrar o Consultar Cliente
+      let customerId = null;
+      const { data: existingCust } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('company_id', companyId)
+        .eq('phone', userPhone)
+        .limit(1);
+
+      if (existingCust?.[0]) {
+        customerId = existingCust[0].id;
+      } else {
+        const { data: newCust, error: custError } = await supabase
+          .from('customers')
+          .insert([{
+            company_id: companyId,
+            name: userName,
+            phone: userPhone,
+            email: `${userName.toLowerCase().replace(/\s+/g, '')}@example.com`
+          }])
+          .select('id')
+          .single();
+
+        if (custError) throw custError;
+        customerId = newCust.id;
+      }
+
+      // Paso B: Insertar la Factura (Venta POS)
+      const invoiceNumber = `EV-${Date.now()}`;
+      const { data: savedInvoice, error: invError } = await supabase
+        .from('invoices')
+        .insert([{
+          company_id: companyId,
+          customer_id: customerId,
+          total_amount: totalCost,
+          status: 'paid',
+          payment_method: 'transfer',
+          invoice_number: invoiceNumber
+        }])
+        .select('id')
+        .single();
+
+      if (invError) throw invError;
+
+      // Paso C: Insertar el Detalle del Item
+      const itemsToInsert: any[] = [];
+      
+      productsList.forEach((p) => {
+        const nameLower = p.name.toLowerCase();
+        let isSelected = false;
+        let qty = 1;
+
+        if (nameLower.includes('mesero') && includeWaiters) {
+          isSelected = true;
+          qty = waiterCount;
+        } else if ((nameLower.includes('cocinero') || nameLower.includes('chef')) && includeChefs) {
+          isSelected = true;
+          qty = chefCount;
+        } else if ((nameLower.includes('vajilla') || nameLower.includes('utensilio')) && includeUtensils) {
+          isSelected = true;
+          qty = guests * hours;
+        } else if ((nameLower.includes('mesa') || nameLower.includes('mobiliario')) && includeFurniture) {
+          isSelected = true;
+          qty = guests;
+        } else if ((nameLower.includes('lugar') || nameLower.includes('salon') || nameLower.includes('espacio')) && includeSpace) {
+          isSelected = true;
+          qty = hours;
+        } else if ((nameLower.includes('comida') || nameLower.includes('catering')) && includeCatering) {
+          isSelected = true;
+          qty = guests;
+        }
+
+        if (isSelected) {
+          itemsToInsert.push({
+            invoice_id: savedInvoice.id,
+            product_id: p.id,
+            name: p.name,
+            price: Number(p.price),
+            qty: Number(qty)
+          });
+        }
+      });
+
+      if (itemsToInsert.length > 0) {
+        const { error: itemsError } = await supabase
+          .from('invoice_items')
+          .insert(itemsToInsert);
+        if (itemsError) throw itemsError;
+      }
+
+      // Paso D: Bloquear los Horas en el Gantt (actualizar columna description de productos)
+      for (const item of itemsToInsert) {
+        const product = productsList.find(p => p.id === item.product_id);
+        if (!product) continue;
+
+        let settings: any = {};
+        try {
+          settings = JSON.parse(product.description || '{}');
+        } catch (e) {
+          settings = { description: product.description || '' };
+        }
+
+        if (!settings.occupiedSlots) {
+          settings.occupiedSlots = [];
+        }
+
+        settings.occupiedSlots.push({
+          date: bookingDate,
+          time: bookingTime,
+          duration: hours
+        });
+
+        const { error: prodUpdateError } = await supabase
+          .from('products')
+          .update({
+            description: JSON.stringify(settings)
+          })
+          .eq('id', product.id);
+        
+        if (prodUpdateError) console.error(`Error actualizando disponibilidad del producto ${product.name}:`, prodUpdateError);
+      }
+
       setIsBooked(true);
+    } catch (err: any) {
+      console.error('Error procesando transacción de reserva:', err);
+      setErrorMessage(`Error: ${err.message || 'No se pudo completar la transacción.'}`);
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
 
@@ -421,13 +674,50 @@ export default function Configurator() {
                     onChange={(e) => setUserPhone(e.target.value)}
                     className="w-full px-4 py-3 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none placeholder-brand-cream/40 text-brand-cream text-sm transition-colors"
                   />
+
+                  {/* Date & Time fields */}
+                  <div className="grid grid-cols-2 gap-3 text-left">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-brand-cream/70 block pl-1">Fecha del evento</label>
+                      <input
+                        type="date"
+                        required
+                        value={bookingDate}
+                        onChange={(e) => setBookingDate(e.target.value)}
+                        className="w-full px-3 py-2.5 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none text-brand-cream text-xs transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-brand-cream/70 block pl-1">Hora de inicio</label>
+                      <input
+                        type="time"
+                        required
+                        value={bookingTime}
+                        onChange={(e) => setBookingTime(e.target.value)}
+                        className="w-full px-3 py-2.5 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none text-brand-cream text-xs transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {errorMessage && (
+                    <p className="text-brand-yellow text-xs font-bold text-center leading-relaxed max-w-xs mx-auto pt-1 bg-red-500/10 p-2 rounded-xl border border-red-500/20">
+                      {errorMessage}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
-                    disabled={totalCost === 0}
+                    disabled={totalCost === 0 || isSubmitLoading}
                     className="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    <span>Cotizar esta Configuración</span>
-                    <ArrowRight className="w-4 h-4 text-brand-yellow group-hover:translate-x-1 transition-transform" />
+                    {isSubmitLoading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <span>Cotizar esta Configuración</span>
+                        <ArrowRight className="w-4 h-4 text-brand-yellow group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
                   </button>
                 </motion.form>
               ) : (
@@ -446,7 +736,7 @@ export default function Configurator() {
                     <h4 className="font-heading font-bold text-brand-yellow text-md">¡Solicitud Enviada!</h4>
                     <p className="text-xs text-brand-cream/80 mt-1 leading-relaxed">
                       Hola, <strong>{userName}</strong>. Hemos recibido tu pre-cotización de <strong>{formatCOP(totalCost)}</strong>. 
-                      Un asesor de Fiesta te escribirá a tu Whatsapp <strong>{userPhone}</strong> en unos minutos.
+                      Un asesor te escribirá a tu Whatsapp <strong>{userPhone}</strong> en unos minutos para confirmar tu cotización y evento.
                     </p>
                   </div>
                   <button
@@ -820,7 +1110,7 @@ export default function Configurator() {
                     </div>
                   </div>
 
-                  {/* Submission Form mobile */}
+                    {/* Submission Form mobile */}
                   <AnimatePresence mode="wait">
                     {!isBooked ? (
                       <form onSubmit={handleBookSubmit} className="space-y-2.5">
@@ -840,13 +1130,50 @@ export default function Configurator() {
                           onChange={(e) => setUserPhone(e.target.value)}
                           className="w-full px-4 py-3 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none placeholder-brand-cream/30 text-brand-cream text-xs transition-colors"
                         />
+
+                        {/* Mobile Date & Time fields */}
+                        <div className="grid grid-cols-2 gap-3 text-left">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-brand-cream/70 block pl-1">Fecha del evento</label>
+                            <input
+                              type="date"
+                              required
+                              value={bookingDate}
+                              onChange={(e) => setBookingDate(e.target.value)}
+                              className="w-full px-3 py-2.5 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none text-brand-cream text-xs transition-colors"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-brand-cream/70 block pl-1">Hora de inicio</label>
+                            <input
+                              type="time"
+                              required
+                              value={bookingTime}
+                              onChange={(e) => setBookingTime(e.target.value)}
+                              className="w-full px-3 py-2.5 bg-brand-cream/10 border border-brand-cream/20 rounded-xl focus:border-brand-yellow focus:outline-none text-brand-cream text-xs transition-colors"
+                            />
+                          </div>
+                        </div>
+
+                        {errorMessage && (
+                          <p className="text-brand-yellow text-[11px] font-bold text-center leading-relaxed max-w-xs mx-auto pt-1 bg-red-500/10 p-2 rounded-xl border border-red-500/20">
+                            {errorMessage}
+                          </p>
+                        )}
+
                         <button
                           type="submit"
-                          disabled={totalCost === 0}
+                          disabled={totalCost === 0 || isSubmitLoading}
                           className="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 text-xs cursor-pointer disabled:opacity-50"
                         >
-                          <span>Solicitar Cotización</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-brand-yellow" />
+                          {isSubmitLoading ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <span>Solicitar Cotización</span>
+                              <ArrowRight className="w-3.5 h-3.5 text-brand-yellow" />
+                            </>
+                          )}
                         </button>
                       </form>
                     ) : (

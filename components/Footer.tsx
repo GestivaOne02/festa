@@ -66,15 +66,15 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs md:text-sm text-brand-cream/75 font-light">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 text-brand-orange shrink-0 mt-0.5" />
-                <span>+57 300 123 4567</span>
+                <span>+57 (000) 000-0000</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 text-brand-orange shrink-0 mt-0.5" />
-                <span className="break-all">hola@fiesta.com.co</span>
+                <span className="break-all">contacto@tudominio.com</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-brand-orange shrink-0 mt-0.5" />
-                <span>Medellín, Rionegro y Bogotá</span>
+                <span>Ciudad, País</span>
               </li>
             </ul>
           </div>
