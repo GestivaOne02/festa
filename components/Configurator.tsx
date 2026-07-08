@@ -83,8 +83,7 @@ export default function Configurator() {
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, description')
-          .eq('company_id', companyId)
-          .eq('unit', 'HORA');
+          .eq('company_id', companyId);
 
         if (!error && data) {
           const parsedData: Array<DbProduct> = data.map((p: any) => ({

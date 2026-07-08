@@ -28,8 +28,7 @@ export default function ProveedoresPage(): JSX.Element {
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, description, category, image_url')
-          .eq('company_id', companyId)
-          .eq('unit', 'HORA');
+          .eq('company_id', companyId);
 
         if (!error && data) {
           const mapped = data.map((item: any) => mapDbProductToProvider(item));
