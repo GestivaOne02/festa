@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -8,15 +8,46 @@ import Footer from "@/components/Footer";
 import ProviderCard from "@/components/proveedores/ProviderCard";
 import CategoryFilter, { FilterValue } from "@/components/proveedores/CategoryFilter";
 import JoinBanner from "@/components/proveedores/JoinBanner";
-import { PROVIDERS } from "@/constants/providers";
+import { mapDbProductToProvider, Provider } from "@/constants/providers";
+import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
-export default function ProveedoresPage() {
+export default function ProveedoresPage(): JSX.Element {
   const [activeFilter, setActiveFilter] = useState<FilterValue>("Todos");
+  const [providersList, setProvidersList] = useState<Array<Provider>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function loadProviders(): Promise<void> {
+      try {
+        const companyId = await getEnterpriseCompanyId();
+        if (!companyId) {
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, price, description, category, image_url')
+          .eq('company_id', companyId)
+          .eq('unit', 'HORA');
+
+        if (!error && data) {
+          const mapped = data.map((item: any) => mapDbProductToProvider(item));
+          setProvidersList(mapped);
+        }
+      } catch (e) {
+        console.error('Error cargando proveedores desde Supabase:', e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProviders();
+  }, []);
 
   const filteredProviders =
     activeFilter === "Todos"
-      ? PROVIDERS
-      : PROVIDERS.filter((p) => p.category === activeFilter);
+      ? providersList
+      : providersList.filter((p) => p.category === activeFilter);
 
   return (
     <>
@@ -64,20 +95,24 @@ export default function ProveedoresPage() {
               <CategoryFilter active={activeFilter} onChange={setActiveFilter} />
             </motion.div>
 
-            {/* Providers grid: 1 col mobile (compact cards), 2 tablet, 3 desktop */}
-            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              <AnimatePresence mode="popLayout">
-                {filteredProviders.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
-                ))}
-              </AnimatePresence>
-            </motion.div>
-
-            {/* Empty state (safety net if a category has no providers) */}
-            {filteredProviders.length === 0 && (
-              <div className="text-center py-16 text-brand-brown/60 text-sm font-light">
-                Aún no tenemos proveedores en esta categoría. ¡Vuelve pronto!
+            {/* Loading / Grid / Empty state */}
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 space-y-4 bg-brand-cream rounded-[2rem] border border-brand-orange/5 shadow-sm max-w-lg mx-auto">
+                <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-brand-brown/70 font-light">Cargando aliados desde la base de datos...</p>
               </div>
+            ) : filteredProviders.length === 0 ? (
+              <div className="text-center py-16 text-brand-brown/60 text-sm font-light">
+                Aún no tenemos proveedores en esta categoría en la base de datos. ¡Vuelve pronto!
+              </div>
+            ) : (
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+                <AnimatePresence mode="popLayout">
+                  {filteredProviders.map((provider: Provider): JSX.Element => (
+                    <ProviderCard key={provider.id} provider={provider} />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
             )}
           </div>
         </section>

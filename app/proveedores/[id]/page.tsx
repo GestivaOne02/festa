@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -7,14 +8,49 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProviderInfoPanel from "@/components/proveedores/ProviderInfoPanel";
 import ProviderShowcase from "@/components/proveedores/ProviderShowcase";
-import { getProviderById } from "@/constants/providers";
+import { mapDbProductToProvider, Provider } from "@/constants/providers";
+import { supabase } from "@/lib/supabase";
 
-// Provider detail: fixed two-column, full-viewport layout on desktop
-// (no page scroll — each column scrolls internally only if needed).
-// On mobile the columns stack and the page scrolls normally.
-export default function ProveedorDetallePage() {
+export default function ProveedorDetallePage(): JSX.Element {
   const params = useParams<{ id: string }>();
-  const provider = getProviderById(params.id);
+  const [provider, setProvider] = useState<Provider | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function loadProvider(): Promise<void> {
+      if (!params.id) return;
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, price, description, category, image_url')
+          .eq('id', params.id)
+          .single();
+
+        if (!error && data) {
+          setProvider(mapDbProductToProvider(data));
+        }
+      } catch (e) {
+        console.error("Error cargando detalle de proveedor desde Supabase:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProvider();
+  }, [params.id]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-brand-cream flex flex-col items-center justify-center px-4 text-center space-y-4">
+          <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-brand-brown/70 font-light">Cargando detalles de nuestro aliado...</p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   // Not found state
   if (!provider) {
