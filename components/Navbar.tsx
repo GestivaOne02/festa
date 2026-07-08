@@ -48,12 +48,14 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Hash links prefixed with "/" so they also work from /proveedores pages
   const navLinks = [
-    { label: "Inicio", href: "#inicio" },
-    { label: "Servicios", href: "#servicios" },
-    { label: "Cómo funciona", href: "#como-funciona" },
-    { label: "Galería", href: "#galeria" },
-    { label: "Contacto", href: "#contacto" },
+    { label: "Inicio", href: "/#inicio" },
+    { label: "Servicios", href: "/#servicios" },
+    { label: "Proveedores", href: "/proveedores" },
+    { label: "Cómo funciona", href: "/#como-funciona" },
+    { label: "Galería", href: "/#galeria" },
+    { label: "Contacto", href: "/#contacto" },
   ];
 
   // Framer Motion Animation Variants
@@ -95,7 +97,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="#inicio">
+            <Link href="/#inicio">
               <Logo />
             </Link>
 
@@ -122,7 +124,7 @@ export default function Navbar() {
                 Iniciar sesión
               </Link>
               <a
-                href="#cotizador"
+                href="/#cotizador"
                 className="flex items-center gap-2 bg-brand-orange text-white font-bold px-6 py-2.5 rounded-full hover:bg-brand-orange-dark shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all group"
               >
                 <Sparkles className="w-4 h-4 text-brand-yellow group-hover:rotate-12 transition-transform" />
@@ -209,7 +211,7 @@ export default function Navbar() {
                   Iniciar sesión
                 </Link>
                 <a
-                  href="#cotizador"
+                  href="/#cotizador"
                   onClick={() => setIsOpen(false)}
                   className="w-full text-center font-bold bg-brand-orange text-white py-3 rounded-full hover:bg-brand-orange-dark shadow-md flex items-center justify-center gap-2 text-sm"
                 >

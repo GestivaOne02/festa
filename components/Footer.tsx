@@ -10,11 +10,11 @@ export default function Footer() {
   return (
     <footer id="contacto" className="bg-brand-brown text-brand-cream pt-12 md:pt-20 pb-8 border-t border-brand-orange/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-12 gap-8 md:gap-12 pb-8 md:pb-16 border-b border-brand-cream/10">
+        <div className="grid grid-cols-12 gap-y-8 gap-x-4 md:gap-12 pb-8 md:pb-16 border-b border-brand-cream/10">
           
           {/* Column 1: Info (col-span-12 md:col-span-5) */}
           <div className="col-span-12 md:col-span-5 space-y-4">
-            <Link href="#inicio">
+            <Link href="/#inicio">
               {/* Waiter logo with white/orange override details */}
               <div className="inline-block bg-brand-cream/5 px-4 py-1.5 rounded-2xl border border-brand-cream/10 scale-90 origin-left">
                 <Logo />
@@ -51,11 +51,12 @@ export default function Footer() {
           <div className="col-span-6 md:col-span-3 space-y-3">
             <h4 className="font-heading text-xs md:text-base font-bold text-brand-yellow uppercase tracking-wider md:normal-case">Servicios</h4>
             <ul className="space-y-2 text-xs md:text-sm text-brand-cream/75 font-light">
-              <li><a href="#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Meseros por Horas</a></li>
-              <li><a href="#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Cocineros Profesionales</a></li>
-              <li><a href="#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Utensilios y Vajilla</a></li>
-              <li><a href="#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Mesas y Mobiliario</a></li>
-              <li><a href="#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Catering de Comida</a></li>
+              <li><a href="/#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Meseros por Horas</a></li>
+              <li><a href="/#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Cocineros Profesionales</a></li>
+              <li><a href="/#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Utensilios y Vajilla</a></li>
+              <li><a href="/#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Mesas y Mobiliario</a></li>
+              <li><a href="/#servicios" className="hover:text-brand-orange transition-colors block py-0.5">Catering de Comida</a></li>
+              <li><Link href="/proveedores" className="hover:text-brand-orange transition-colors block py-0.5">Nuestros Proveedores</Link></li>
             </ul>
           </div>
 
