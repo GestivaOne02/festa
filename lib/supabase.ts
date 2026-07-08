@@ -12,6 +12,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 let cachedCompanyId: string | null = null;
 
 export async function getEnterpriseCompanyId(): Promise<string | null> {
-  // Retornamos el ID de empresa estáticamente. No hacemos login en frontend.
-  return '99f3eb1c-483b-4870-b640-00983e847a4a';
+  // Retornamos el ID de tu empresa en GestivaOne donde acabas de crear los productos
+  return process.env.NEXT_PUBLIC_GESTIVA_COMPANY_ID || '983b2767-e031-47a4-862d-a30336d5d81a';
 }
