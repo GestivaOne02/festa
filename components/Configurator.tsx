@@ -5,20 +5,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Check, Clock, Users, ArrowRight, X } from "lucide-react";
 import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
-interface DbProduct {
+type DbProduct = {
   id: string;
   name: string;
-  price: string | number;
+  price: number;
   description: string;
-}
+};
 
-interface InvoiceItemInsert {
+type InvoiceItemInsert = {
   invoice_id: string;
   product_id: string;
   name: string;
   price: number;
   qty: number;
-}
+};
+
+type ProductSettings = {
+  occupiedSlots?: Array<{
+    date: string;
+    time: string;
+    duration: number;
+  }>;
+  description?: string;
+};
 
 export default function Configurator() {
   const [hours, setHours] = useState(5);
@@ -48,7 +57,7 @@ export default function Configurator() {
   const [errorMessage, setErrorMessage] = useState("");
 
   // Database products state
-  const [productsList, setProductsList] = useState<DbProduct[]>([]);
+  const [productsList, setProductsList] = useState<Array<DbProduct>>([]);
   const [rates, setRates] = useState({
     waiter: 25000,
     chef: 45000,
@@ -76,10 +85,16 @@ export default function Configurator() {
           .eq('unit', 'HORA');
 
         if (!error && data) {
-          setProductsList(data as DbProduct[]);
+          const parsedData: Array<DbProduct> = data.map((p: any) => ({
+            id: String(p.id),
+            name: String(p.name),
+            price: Number(p.price),
+            description: String(p.description || '')
+          }));
+          setProductsList(parsedData);
           
           const matchedRates = { ...rates };
-          data.forEach((p: DbProduct) => {
+          parsedData.forEach((p: DbProduct) => {
             const name = p.name.toLowerCase();
             const price = Number(p.price);
             if (name.includes('mesero')) matchedRates.waiter = price;
@@ -117,23 +132,23 @@ export default function Configurator() {
   const totalCost = waitersCost + chefsCost + utensilsCost + furnitureCost + spaceCost + cateringCost;
 
   // Format helper
-  const formatCOP = (num: number): string => {
+  function formatCOP(num: number): string {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(num);
-  };
+  }
 
   // Helper to validate Gantt times overlap
-  const validateAvailability = (date: string, time: string, duration: number): { valid: boolean; conflictProduct?: string } => {
+  function validateAvailability(date: string, time: string, duration: number): { valid: boolean; conflictProduct?: string } {
     if (!date || !time) return { valid: true };
 
-    const parseTimeToMin = (t: string): number => {
+    function parseTimeToMin(t: string): number {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
-    };
+    }
 
     const newStart = parseTimeToMin(time);
     const newEnd = newStart + duration * 60;
@@ -151,7 +166,7 @@ export default function Configurator() {
 
       if (!isSelected) continue;
 
-      let settings: { occupiedSlots?: { date: string; time: string; duration: number }[]; description?: string } = {};
+      let settings: ProductSettings = {};
       try {
         settings = JSON.parse(p.description || '{}');
       } catch (e) {
@@ -173,7 +188,7 @@ export default function Configurator() {
     }
 
     return { valid: true };
-  };
+  }
 
   const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -246,7 +261,7 @@ export default function Configurator() {
       if (invError) throw invError;
 
       // Paso C: Insertar el Detalle del Item
-      const itemsToInsert: InvoiceItemInsert[] = [];
+      const itemsToInsert: Array<InvoiceItemInsert> = [];
       
       productsList.forEach((p) => {
         const nameLower = p.name.toLowerCase();
@@ -296,7 +311,7 @@ export default function Configurator() {
         const product = productsList.find(p => p.id === item.product_id);
         if (!product) continue;
 
-        let settings: { occupiedSlots?: { date: string; time: string; duration: number }[]; description?: string } = {};
+        let settings: ProductSettings = {};
         try {
           settings = JSON.parse(product.description || '{}');
         } catch (e) {

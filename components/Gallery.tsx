@@ -10,7 +10,7 @@ type GalleryImage = {
 
 export default function Gallery() {
   // Lista vacía para servir como plantilla (template). Añadir imágenes reales aquí.
-  const images: GalleryImage[] = [];
+  const images: Array<GalleryImage> = [];
 
   return (
     <section id="galeria" className="pt-14 pb-10 md:py-24 bg-brand-cream">

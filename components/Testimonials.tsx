@@ -12,7 +12,7 @@ type Testimonial = {
 
 export default function Testimonials() {
   // Lista vacía para servir como plantilla (template). Añadir opiniones reales de clientes aquí.
-  const testimonials: Testimonial[] = [];
+  const testimonials: Array<Testimonial> = [];
 
   return (
     <section className="pt-14 pb-10 md:py-24 bg-brand-orange/5 relative overflow-hidden">

@@ -14,7 +14,7 @@ interface DbProduct {
 
 export default function Services() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [servicesList, setServicesList] = useState<Service[]>([]);
+  const [servicesList, setServicesList] = useState<Array<Service>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
