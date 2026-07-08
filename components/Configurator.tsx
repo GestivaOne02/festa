@@ -338,6 +338,29 @@ export default function Configurator() {
         
         if (prodUpdateError) console.error(`Error actualizando disponibilidad del producto ${product.name}:`, prodUpdateError);
       }
+      // Paso E: Generar Factura en GestivaOne
+      const clientEmail = `${userName.toLowerCase().replace(/\s+/g, '')}@example.com`;
+      try {
+        const invoiceRes = await fetch('/api/invoices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_name: userName,
+            client_email: clientEmail,
+            product_name: "Reserva de Servicios Múltiples en Festa",
+            amount: totalCost,
+            quantity: 1
+          })
+        });
+        const invoiceData = await invoiceRes.json();
+        if (invoiceData.success) {
+          console.log("Factura generada con éxito. PDF:", invoiceData.pdf_url);
+        } else {
+          console.error("No se pudo autogenerar la factura en GestivaOne:", invoiceData.message);
+        }
+      } catch (invoiceErr) {
+        console.error("Error conectando con la API de facturas:", invoiceErr);
+      }
 
       setIsBooked(true);
     } catch (err) {
