@@ -12,12 +12,12 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.GES
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function check() {
-  const { data: products, error } = await supabase.from('products').select('*');
-  if (error) console.error("Error reading products:", error);
-  else {
-    console.log(`Found ${products.length} products anonymously.`);
-    products.forEach(p => console.log(`- ID: ${p.id}, Name: ${p.name}, Unit: ${p.unit}, Category: ${p.category}`));
-  }
+  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    email: 'randymendozasalas42@gmail.com',
+    password: 'Admin123.'
+  });
+  if (authError) return console.error(authError);
+  console.log("LOGIN SUCCESS! User ID:", authData.user.id);
 }
 
 check();
