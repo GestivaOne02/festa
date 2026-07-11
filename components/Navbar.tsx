@@ -93,7 +93,7 @@ export default function Navbar() {
             : "py-6 bg-transparent opacity-100"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24">
           {/* Unified Layout for all devices */}
           <div className="flex flex-col gap-3 md:gap-4">
             {/* Top Row */}
