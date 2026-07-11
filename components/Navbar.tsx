@@ -94,63 +94,50 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Desktop Layout */}
-          <div className="hidden md:flex flex-col gap-4">
+          {/* Unified Layout for all devices */}
+          <div className="flex flex-col gap-3 md:gap-4">
             {/* Top Row */}
             <div className="flex items-center justify-between">
               {/* Empty left block for center balance */}
-              <div className="flex-1" />
+              <div className="hidden sm:block flex-1" />
               
               {/* Center Logo */}
-              <Link href="/#inicio" className="flex-1 flex justify-center">
+              <Link href="/#inicio" className="flex-none sm:flex-1 flex justify-start sm:justify-center">
                 <Logo />
               </Link>
               
               {/* Right CTA Buttons */}
-              <div className="flex-1 flex justify-end items-center gap-6">
+              <div className="flex-1 flex justify-end items-center gap-3 sm:gap-6">
                 <Link
                   href="/login"
-                  className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
+                  className="font-body text-[10px] sm:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
                 >
-                  Iniciar sesión
+                  <span className="hidden sm:inline">Iniciar sesión</span>
+                  <span className="sm:hidden">Ingresar</span>
                 </Link>
                 <a
                   href="/#cotizador"
-                  className="font-body text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-6 py-3 transition-colors duration-300"
+                  className="font-body text-[10px] sm:text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-3 sm:px-6 py-1.5 sm:py-3 transition-colors duration-300"
                 >
-                  Cotiza tu evento
+                  <span className="hidden sm:inline">Cotiza tu evento</span>
+                  <span className="sm:hidden">Cotizar</span>
                 </a>
               </div>
             </div>
 
             {/* Bottom Row - Navigation Links */}
-            <nav className="flex items-center justify-center gap-8">
+            <nav className="flex items-center justify-between sm:justify-center overflow-x-auto scrollbar-none gap-4 sm:gap-8 pb-2 sm:pb-0">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="font-body text-[11px] lg:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors relative group py-2"
+                  className="font-body text-[10px] lg:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors relative group py-1 sm:py-2 whitespace-nowrap shrink-0"
                 >
                   {link.label}
                   <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary-gold transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
             </nav>
-          </div>
-
-          {/* Mobile Layout */}
-          <div className="flex md:hidden items-center justify-between">
-            <Link href="/#inicio">
-              <Logo />
-            </Link>
-
-            <button
-              onClick={() => setIsOpen(true)}
-              className="p-2 text-primary-gold focus:outline-none cursor-pointer"
-              aria-label="Open menu"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
           </div>
         </div>
       </header>
