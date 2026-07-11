@@ -10,8 +10,10 @@ import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 import { Sparkles, ArrowRight, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Home() {
+  const [isFaqOpen, setIsFaqOpen] = useState(false);
   return (
     <>
       {/* Navigation */}
@@ -73,7 +75,7 @@ export default function Home() {
                   href="https://wa.me/573001234567"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full sm:w-auto bg-white border border-white text-primary-gold-dark hover:bg-white/90 font-bold px-8 py-4 rounded-none transition-colors text-sm flex items-center justify-center gap-1"
+                  className="w-full sm:w-auto bg-white border border-white text-primary-gold hover:bg-transparent hover:text-white font-bold px-8 py-4 rounded-none transition-colors text-sm flex items-center justify-center gap-1"
                 >
                   Hablar con un asesor
                 </a>
@@ -81,12 +83,15 @@ export default function Home() {
 
               {/* FAQ Dropdown Animado */}
               <div className="pt-8 mx-auto max-w-2xl text-left">
-                <div className="group border border-white/20 bg-white/5 cursor-pointer rounded-none">
+                <div 
+                  className="group border border-white/20 bg-white/5 cursor-pointer rounded-none"
+                  onClick={() => setIsFaqOpen(!isFaqOpen)}
+                >
                   <div className="flex justify-between items-center p-4">
                     <span className="text-white font-bold tracking-wide">Preguntas Frecuentes</span>
-                    <ChevronDown className="w-5 h-5 text-white transition-transform duration-300 group-hover:rotate-180" />
+                    <ChevronDown className={`w-5 h-5 text-white transition-transform duration-300 group-hover:rotate-180 ${isFaqOpen ? 'rotate-180' : ''}`} />
                   </div>
-                  <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-[500px]">
+                  <div className={`overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-[500px] ${isFaqOpen ? 'max-h-[500px]' : 'max-h-0'}`}>
                     <div className="p-4 pt-0 space-y-4">
                       <div className="border-t border-white/10 pt-4">
                         <p className="text-white font-semibold text-sm">¿Tienen un mínimo de horas requeridas?</p>
