@@ -1204,9 +1204,10 @@ export default function Configurator() {
               <button
                 type="button"
                 onClick={() => setIsBottomSheetOpen(true)}
-                className="bg-primary-gold hover:bg-primary-gold/90 text-white font-bold px-4 flex-1 max-w-[160px] flex items-center justify-center text-xs transition-colors cursor-pointer tracking-wide"
+                className="bg-primary-gold hover:bg-primary-gold/90 text-white font-bold px-4 flex-1 max-w-[170px] flex items-center justify-center text-xs transition-colors cursor-pointer tracking-wide gap-1.5"
               >
                 <span>Continuar Cotización</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
