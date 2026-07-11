@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, Check, Clock, Users, ArrowRight, X } from "lucide-react";
+import { Calculator, Check, Clock, Users, ArrowRight, X, Sparkles, MapPin, ChefHat, UtensilsCrossed, Armchair, Star } from "lucide-react";
 import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
 
 type DbProduct = {
@@ -119,9 +119,9 @@ export default function Configurator() {
   const WAITER_RATE = rates.waiter;
   const CHEF_RATE = rates.chef;
   const UTENSIL_RATE = rates.utensil;
-  const FURNITURE_RATE = rates.furniture; // per guest flat average
+  const FURNITURE_RATE = rates.furniture;
   const SPACE_RATE = rates.space;
-  const CATERING_RATE = rates.catering; // per guest flat
+  const CATERING_RATE = rates.catering;
 
   // Calculators
   const waitersCost = includeWaiters ? waiterCount * hours * WAITER_RATE : 0;
@@ -157,7 +157,6 @@ export default function Configurator() {
 
     for (const p of productsList) {
       const nameLower = p.name.toLowerCase();
-      // Only validate active toggled services
       const isSelected = 
         (nameLower.includes('mesero') && includeWaiters) ||
         ((nameLower.includes('cocinero') || nameLower.includes('chef')) && includeChefs) ||
@@ -180,8 +179,6 @@ export default function Configurator() {
         if (slot.date === date) {
           const slotStart = parseTimeToMin(slot.time);
           const slotEnd = slotStart + Number(slot.duration) * 60;
-
-          // Check overlap
           if (newStart < slotEnd && slotStart < newEnd) {
             return { valid: false, conflictProduct: p.name };
           }
@@ -210,7 +207,6 @@ export default function Configurator() {
         return;
       }
 
-      // 1. Validar disponibilidad Gantt
       const availability = validateAvailability(bookingDate, bookingTime, hours);
       if (!availability.valid) {
         setErrorMessage(`⚠️ Conflicto de Agenda: El servicio "${availability.conflictProduct}" ya está reservado en la fecha y horario seleccionados.`);
@@ -218,8 +214,6 @@ export default function Configurator() {
         return;
       }
 
-      // Facturación y Correos gestionada 100% por el Edge Function de GestivaOne
-      // Paso E: Generar Factura en GestivaOne
       const clientEmail = `${userName.toLowerCase().replace(/\s+/g, '')}@example.com`;
       try {
         const invoiceRes = await fetch('/api/invoices', {
@@ -253,6 +247,20 @@ export default function Configurator() {
     }
   };
 
+  // Receipt line items for the real-time invoice
+  const receiptItems = [
+    ...(includeWaiters ? [{ label: `${waiterCount} Mesero${waiterCount > 1 ? 's' : ''} × ${hours}h`, cost: waitersCost, icon: "👔" }] : []),
+    ...(includeChefs ? [{ label: `${chefCount} Cocinero${chefCount > 1 ? 's' : ''} × ${hours}h`, cost: chefsCost, icon: "👨‍🍳" }] : []),
+    ...(includeUtensils ? [{ label: `Vajilla (${guests}p × ${hours}h)`, cost: utensilsCost, icon: "🍽️" }] : []),
+    ...(includeFurniture ? [{ label: `Mobiliario (${guests}p)`, cost: furnitureCost, icon: "🪑" }] : []),
+    ...(includeSpace ? [{ label: `Lugar × ${hours}h`, cost: spaceCost, icon: "🏛️" }] : []),
+    ...(includeCatering ? [{ label: `Catering (${guests} platos)`, cost: cateringCost, icon: "🥗" }] : []),
+  ];
+
+  // Generate receipt ID based on current config
+  const receiptId = `FESTA-${guests.toString().padStart(3,'0')}-${hours.toString().padStart(2,'0')}`;
+  const today = new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+
   return (
     <section id="cotizador" className="pt-14 pb-8 lg:py-20 bg-secondary-white/[0.02] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -271,7 +279,7 @@ export default function Configurator() {
         {/* ========================================================================= */}
         {/* 1. DESKTOP VIEW (Visible only on large screens >= lg) */}
         {/* ========================================================================= */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 items-start">
+        <div className="hidden lg:grid grid-cols-12 gap-10 items-start">
           
           {/* Controls - Left side (col-span-7) */}
           <div className="col-span-7 bg-dark-bg border border-primary-gold/10 p-8 rounded-none shadow-xl space-y-8">
@@ -515,190 +523,267 @@ export default function Configurator() {
 
           </div>
 
-                    {/* Breakdown & Submit - Right side (col-span-5) */}
+          {/* ============================================================== */}
+          {/* PREMIUM RECEIPT / INVOICE - Right side (col-span-5)           */}
+          {/* ============================================================== */}
           <div className="col-span-5 relative sticky top-24">
-            <div className="bg-secondary-white text-dark-bg rounded-[30px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative pb-[18px]">
-              
-              <div className="relative flex items-center justify-center py-6 mt-4">
-                {/* Muescas laterales */}
-                <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -left-[21px] z-10" />
-                <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -right-[21px] z-10" />
-                
-                {/* Dashed line */}
-                <div className="w-full mx-10 border-t-2 border-dashed border-dark-bg/20" />
-              </div>
 
-              <div className="p-10">
-                {/* Calculations Breakdown */}
-                <div className="space-y-2 text-sm font-light mb-8">
-                  {includeWaiters && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">{waiterCount} Meseros x {hours}h</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(waitersCost)}</span>
-                    </div>
-                  )}
-                  {includeChefs && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">{chefCount} Cocineros x {hours}h</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(chefsCost)}</span>
-                    </div>
-                  )}
-                  {includeUtensils && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">Vajilla ({guests}p x {hours}h)</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(utensilsCost)}</span>
-                    </div>
-                  )}
-                  {includeFurniture && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">Mobiliario ({guests}p)</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(furnitureCost)}</span>
-                    </div>
-                  )}
-                  {includeSpace && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">Lugar x {hours}h</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(spaceCost)}</span>
-                    </div>
-                  )}
-                  {includeCatering && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">Catering ({guests} platos)</span>
-                      <span className="font-mono font-semibold text-lg">{formatCOP(cateringCost)}</span>
-                    </div>
-                  )}
-                  {totalCost === 0 && (
-                    <p className="text-dark-bg/60 italic text-center py-4">Selecciona algún servicio para cotizar</p>
-                  )}
-                </div>
+            {/* Receipt Paper */}
+            <div className="relative">
+              {/* Subtle shadow layers for depth */}
+              <div className="absolute inset-0 translate-y-2 translate-x-1 bg-primary-gold/10 rounded-t-[4px]" />
+              <div className="absolute inset-0 translate-y-1 translate-x-0.5 bg-primary-gold/20 rounded-t-[4px]" />
 
-                <div className="flex justify-between items-end mb-8 bg-dark-bg/5 p-4 rounded-2xl">
-                  <div>
-                    <span className="text-dark-bg/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Total Estimado</span>
-                    <span className="text-xs text-dark-bg/40 font-semibold">Ref. aproximada</span>
+              <div className="relative bg-[#FAFAF7] text-dark-bg rounded-t-[4px] overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.25)]">
+
+                {/* Receipt Header — gold gradient band */}
+                <div className="bg-gradient-to-r from-[#BFA37E] to-[#8C7355] px-8 py-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-white/60 text-[10px] font-body font-bold tracking-[0.2em] uppercase mb-1">Cotización Estimada</p>
+                      <h3 className="text-white font-heading text-2xl font-bold tracking-wide">FESTA</h3>
+                      <p className="text-white/50 text-[10px] font-body mt-0.5 tracking-wider">EVENTS</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-white/50 text-[9px] font-body font-bold tracking-widest uppercase">No. Ref.</p>
+                      <p className="text-white font-mono text-xs font-bold mt-0.5">{receiptId}</p>
+                      <p className="text-white/40 text-[9px] font-body mt-2">{today}</p>
+                    </div>
                   </div>
-                  <span className="text-3xl font-heading font-bold text-dark-bg tracking-wider font-mono">
-                    {formatCOP(totalCost)}
-                  </span>
+
+                  {/* Event summary chips */}
+                  <div className="flex gap-2 mt-4">
+                    <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[10px] font-body font-bold px-2.5 py-1 rounded-full">
+                      <Clock className="w-2.5 h-2.5" />{hours}h
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[10px] font-body font-bold px-2.5 py-1 rounded-full">
+                      <Users className="w-2.5 h-2.5" />{guests} inv.
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[10px] font-body font-bold px-2.5 py-1 rounded-full">
+                      <Sparkles className="w-2.5 h-2.5" />{receiptItems.length} serv.
+                    </span>
+                  </div>
                 </div>
 
-                <div className="border-t-2 border-dashed border-dark-bg/10 pt-4" />
+                {/* Ticket perforation */}
+                <div className="relative flex items-center">
+                  <div className="absolute -left-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="absolute -right-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-6" />
+                </div>
 
-                {/* Quote Submission Mockup */}
-                <AnimatePresence mode="wait">
-                  {!isBooked ? (
-                    <motion.form
-                      key="form"
-                      onSubmit={handleBookSubmit}
-                      className="space-y-3 pt-4"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <input
-                        type="text"
-                        required
-                        placeholder="Tu nombre completo"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        className="w-full px-4 py-3 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none placeholder-dark-bg/40 text-dark-bg text-sm transition-colors"
-                      />
-                      <input
-                        type="tel"
-                        required
-                        placeholder="Número de celular"
-                        value={userPhone}
-                        onChange={(e) => setUserPhone(e.target.value)}
-                        className="w-full px-4 py-3 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none placeholder-dark-bg/40 text-dark-bg text-sm transition-colors"
-                      />
+                {/* Line items area */}
+                <div className="px-8 py-5 min-h-[140px]">
+                  
+                  {/* Column headers */}
+                  <div className="flex justify-between items-center mb-3 pb-2 border-b border-dark-bg/8">
+                    <span className="text-[9px] font-body font-bold text-dark-bg/40 tracking-[0.18em] uppercase">Servicio</span>
+                    <span className="text-[9px] font-body font-bold text-dark-bg/40 tracking-[0.18em] uppercase">Subtotal</span>
+                  </div>
 
-                      {/* Date & Time fields */}
-                      <div className="grid grid-cols-2 gap-3 text-left">
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-dark-bg/70 block pl-1">Fecha del evento</label>
-                          <input
-                            type="date"
-                            required
-                            value={bookingDate}
-                            onChange={(e) => setBookingDate(e.target.value)}
-                            className="w-full px-3 py-2.5 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-dark-bg/70 block pl-1">Hora de inicio</label>
-                          <input
-                            type="time"
-                            required
-                            value={bookingTime}
-                            onChange={(e) => setBookingTime(e.target.value)}
-                            className="w-full px-3 py-2.5 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors"
-                          />
-                        </div>
-                      </div>
-
-                      {errorMessage && (
-                        <p className="text-primary-gold text-xs font-bold text-center leading-relaxed max-w-xs mx-auto pt-1 bg-red-500/10 p-2 rounded-xl border border-red-500/20">
-                          {errorMessage}
-                        </p>
-                      )}
-
-                      <button
-                        type="submit"
-                        disabled={totalCost === 0 || isSubmitLoading}
-                        className="w-full bg-primary-gold hover:bg-primary-gold-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-4"
+                  {/* Animated receipt lines */}
+                  <AnimatePresence initial={false}>
+                    {receiptItems.length === 0 ? (
+                      <motion.div
+                        key="empty"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex flex-col items-center justify-center py-6 text-dark-bg/30"
                       >
-                        {isSubmitLoading ? (
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <>
-                            <span>Cotizar esta Configuración</span>
-                            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-                          </>
-                        )}
-                      </button>
-                    </motion.form>
-                  ) : (
+                        <span className="text-3xl mb-2">✨</span>
+                        <p className="text-xs font-body italic">Selecciona servicios para ver tu cotización</p>
+                      </motion.div>
+                    ) : (
+                      receiptItems.map((item, i) => (
+                        <motion.div
+                          key={item.label}
+                          initial={{ opacity: 0, x: -12, height: 0 }}
+                          animate={{ opacity: 1, x: 0, height: "auto" }}
+                          exit={{ opacity: 0, x: 12, height: 0 }}
+                          transition={{ duration: 0.25, delay: i * 0.04 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="flex justify-between items-center py-2.5 border-b border-dark-bg/5 last:border-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base leading-none">{item.icon}</span>
+                              <span className="text-[11px] font-body font-semibold text-dark-bg/75 tracking-wide">{item.label}</span>
+                            </div>
+                            <motion.span
+                              key={item.cost}
+                              initial={{ scale: 1.1, color: "#BFA37E" }}
+                              animate={{ scale: 1, color: "#1a1a1a" }}
+                              transition={{ duration: 0.3 }}
+                              className="font-mono text-xs font-bold text-dark-bg"
+                            >
+                              {formatCOP(item.cost)}
+                            </motion.span>
+                          </div>
+                        </motion.div>
+                      ))
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Second perforation */}
+                <div className="relative flex items-center">
+                  <div className="absolute -left-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="absolute -right-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-6" />
+                </div>
+
+                {/* Total area */}
+                <div className="px-8 py-5">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-[9px] font-body font-bold tracking-[0.2em] uppercase text-dark-bg/40 mb-1">Total Estimado</p>
+                      <p className="text-[9px] font-body text-dark-bg/30">Ref. aproximada · sin impuestos</p>
+                    </div>
                     <motion.div
-                      key="success"
-                      className="bg-dark-bg/5 border border-primary-gold/30 p-5 rounded-2xl text-center space-y-3 mt-4"
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
-                      transition={{ type: "spring" }}
+                      key={totalCost}
+                      initial={{ scale: 1.05, color: "#BFA37E" }}
+                      animate={{ scale: 1, color: "#1a1a1a" }}
+                      transition={{ duration: 0.35, type: "spring", bounce: 0.3 }}
+                      className="text-right"
                     >
-                      <div className="w-12 h-12 bg-primary-gold/20 text-primary-gold rounded-full flex items-center justify-center mx-auto text-2xl">
-                        ✓
-                      </div>
-                      <div>
-                        <h4 className="font-heading font-bold text-primary-gold text-md">¡Solicitud Enviada!</h4>
-                        <p className="text-xs text-dark-bg/80 mt-1 leading-relaxed">
-                          Hola, <strong>{userName}</strong>. Hemos recibido tu pre-cotización de <strong>{formatCOP(totalCost)}</strong>. 
-                          Un asesor te escribirá a tu Whatsapp <strong>{userPhone}</strong> en unos minutos para confirmar.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setIsBooked(false);
-                          setUserName("");
-                          setUserPhone("");
-                        }}
-                        className="text-xs text-primary-gold hover:underline cursor-pointer"
-                      >
-                        Hacer otra simulación
-                      </button>
+                      <p className="font-mono font-bold text-2xl text-dark-bg tracking-wider">
+                        {formatCOP(totalCost)}
+                      </p>
                     </motion.div>
-                  )}
-                </AnimatePresence>
+                  </div>
+
+                  {/* Stars rating visual */}
+                  <div className="flex items-center gap-1 mt-3">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className="w-3 h-3 fill-primary-gold text-primary-gold" />
+                    ))}
+                    <span className="text-[9px] text-dark-bg/30 font-body ml-1">Servicio Premium · Festa Events</span>
+                  </div>
+                </div>
+
+                {/* Third perforation before form */}
+                <div className="relative flex items-center">
+                  <div className="absolute -left-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="absolute -right-4 w-8 h-8 bg-dark-bg rounded-full z-10" />
+                  <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-6" />
+                </div>
+
+                {/* Booking form */}
+                <div className="px-8 py-6">
+                  <AnimatePresence mode="wait">
+                    {!isBooked ? (
+                      <motion.form
+                        key="form"
+                        onSubmit={handleBookSubmit}
+                        className="space-y-3"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <p className="text-[9px] font-body font-bold tracking-[0.18em] uppercase text-dark-bg/40 mb-3">Completa para confirmar</p>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Tu nombre completo"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          className="w-full px-4 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors rounded-none font-body"
+                        />
+                        <input
+                          type="tel"
+                          required
+                          placeholder="Número de celular"
+                          value={userPhone}
+                          onChange={(e) => setUserPhone(e.target.value)}
+                          className="w-full px-4 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors rounded-none font-body"
+                        />
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Fecha</label>
+                            <input
+                              type="date"
+                              required
+                              value={bookingDate}
+                              onChange={(e) => setBookingDate(e.target.value)}
+                              className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Hora inicio</label>
+                            <input
+                              type="time"
+                              required
+                              value={bookingTime}
+                              onChange={(e) => setBookingTime(e.target.value)}
+                              className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
+                            />
+                          </div>
+                        </div>
+
+                        {errorMessage && (
+                          <p className="text-red-600 text-[10px] font-body font-bold text-center leading-relaxed bg-red-50 p-2 border border-red-200">
+                            {errorMessage}
+                          </p>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={totalCost === 0 || isSubmitLoading}
+                          className="w-full bg-gradient-to-r from-primary-gold to-[#8C7355] hover:from-[#8C7355] hover:to-primary-gold text-white font-body font-bold py-3.5 transition-all shadow-md flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2 tracking-widest text-xs uppercase rounded-none"
+                        >
+                          {isSubmitLoading ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <span>Cotizar esta Configuración</span>
+                              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
+                            </>
+                          )}
+                        </button>
+                      </motion.form>
+                    ) : (
+                      <motion.div
+                        key="success"
+                        className="text-center space-y-4 py-4"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        transition={{ type: "spring" }}
+                      >
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", delay: 0.2 }}
+                          className="w-14 h-14 bg-gradient-to-br from-primary-gold to-[#8C7355] rounded-full flex items-center justify-center mx-auto shadow-lg"
+                        >
+                          <Check className="w-7 h-7 text-white" />
+                        </motion.div>
+                        <div>
+                          <h4 className="font-heading font-bold text-primary-gold text-lg">¡Solicitud Enviada!</h4>
+                          <p className="text-xs font-body text-dark-bg/70 mt-2 leading-relaxed max-w-[220px] mx-auto">
+                            Hola <strong>{userName}</strong>. Tu pre-cotización de <strong>{formatCOP(totalCost)}</strong> fue recibida. Un asesor te escribirá al <strong>{userPhone}</strong> pronto.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => { setIsBooked(false); setUserName(""); setUserPhone(""); }}
+                          className="text-xs font-body text-primary-gold hover:underline cursor-pointer"
+                        >
+                          Hacer otra simulación
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
               </div>
 
-              {/* Ondas inferiores */}
-              <div 
-                className="absolute bottom-0 left-0 w-full h-[18px]" 
+              {/* Scalloped bottom edge of receipt */}
+              <div
+                className="w-full h-5 bg-[#FAFAF7]"
                 style={{
-                  background: 'radial-gradient(circle at 15px 0, transparent 15px, #0F0F10 16px)',
-                  backgroundSize: '40px 20px',
-                  backgroundPosition: 'bottom'
-                }} 
+                  clipPath: "polygon(0 0, 100% 0, 100% 100%, 97.5% 60%, 95% 100%, 92.5% 60%, 90% 100%, 87.5% 60%, 85% 100%, 82.5% 60%, 80% 100%, 77.5% 60%, 75% 100%, 72.5% 60%, 70% 100%, 67.5% 60%, 65% 100%, 62.5% 60%, 60% 100%, 57.5% 60%, 55% 100%, 52.5% 60%, 50% 100%, 47.5% 60%, 45% 100%, 42.5% 60%, 40% 100%, 37.5% 60%, 35% 100%, 32.5% 60%, 30% 100%, 27.5% 60%, 25% 100%, 22.5% 60%, 20% 100%, 17.5% 60%, 15% 100%, 12.5% 60%, 10% 100%, 7.5% 60%, 5% 100%, 2.5% 60%, 0 100%)"
+                }}
               />
             </div>
           </div>
@@ -993,177 +1078,210 @@ export default function Configurator() {
               )}
 
               {step === 3 && (
-                                <motion.div
+                <motion.div
                   key="step3"
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 15 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="bg-secondary-white text-dark-bg rounded-[24px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative pb-[14px]">
-                    
-                    <div className="relative flex items-center justify-center py-5 mt-3">
-                      {/* Muescas laterales */}
-                      <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -left-[15px] z-10" />
-                      <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -right-[15px] z-10" />
-                      
-                      {/* Dashed line */}
-                      <div className="w-full mx-6 border-t-2 border-dashed border-dark-bg/20" />
-                    </div>
-
-                    <div className="p-6">
-                      {/* Calculations Breakdown Mobile */}
-                      <div className="space-y-1.5 text-[10px] font-light max-h-[160px] overflow-y-auto pr-1 mb-6">
-                        {includeWaiters && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">{waiterCount} Meseros x {hours}h</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(waitersCost)}</span>
+                  {/* Mobile Receipt */}
+                  <div className="relative">
+                    <div className="bg-[#FAFAF7] text-dark-bg rounded-t-sm overflow-hidden shadow-2xl">
+                      {/* Header gold band */}
+                      <div className="bg-gradient-to-r from-[#BFA37E] to-[#8C7355] px-6 py-5">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-white/60 text-[8px] font-body font-bold tracking-widest uppercase mb-1">Cotización</p>
+                            <h3 className="text-white font-heading text-xl font-bold">FESTA</h3>
                           </div>
-                        )}
-                        {includeChefs && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">{chefCount} Cocineros x {hours}h</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(chefsCost)}</span>
+                          <div className="text-right">
+                            <p className="text-white/50 text-[8px] font-body font-bold tracking-widest uppercase">Ref.</p>
+                            <p className="text-white font-mono text-[10px] font-bold mt-0.5">{receiptId}</p>
                           </div>
-                        )}
-                        {includeUtensils && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">Vajilla ({guests}p x {hours}h)</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(utensilsCost)}</span>
-                          </div>
-                        )}
-                        {includeFurniture && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">Mobiliario ({guests}p)</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(furnitureCost)}</span>
-                          </div>
-                        )}
-                        {includeSpace && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">Lugar x {hours}h</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(spaceCost)}</span>
-                          </div>
-                        )}
-                        {includeCatering && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-dark-bg/60 font-bold tracking-widest uppercase">Catering ({guests} platos)</span>
-                            <span className="font-mono font-semibold text-xs">{formatCOP(cateringCost)}</span>
-                          </div>
-                        )}
-                        {totalCost === 0 && (
-                          <p className="text-dark-bg/50 italic text-center py-2">Ningún servicio seleccionado</p>
-                        )}
-                      </div>
-
-                      <div className="flex justify-between items-end mb-6 bg-dark-bg/5 p-3 rounded-2xl">
-                        <div>
-                          <span className="text-dark-bg/60 text-[9px] font-bold tracking-widest uppercase block mb-1">Total Estimado</span>
-                          <span className="text-[10px] text-dark-bg/40 font-semibold">Ref. aproximada</span>
                         </div>
-                        <span className="text-xl font-heading font-bold text-dark-bg tracking-wider font-mono">
-                          {formatCOP(totalCost)}
-                        </span>
+                        <div className="flex gap-2 mt-3">
+                          <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[9px] font-body font-bold px-2 py-0.5 rounded-full">
+                            <Clock className="w-2 h-2" />{hours}h
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[9px] font-body font-bold px-2 py-0.5 rounded-full">
+                            <Users className="w-2 h-2" />{guests}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="border-t-2 border-dashed border-dark-bg/10 pt-2" />
+                      {/* Perforation */}
+                      <div className="relative flex items-center">
+                        <div className="absolute -left-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="absolute -right-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-5" />
+                      </div>
 
-                      {/* Submission Form mobile */}
-                      <AnimatePresence mode="wait">
-                        {!isBooked ? (
-                          <form onSubmit={handleBookSubmit} className="space-y-2.5 pt-2">
-                            <input
-                              type="text"
-                              required
-                              placeholder="Tu nombre completo"
-                              value={userName}
-                              onChange={(e) => setUserName(e.target.value)}
-                              className="w-full px-4 py-3 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors"
-                            />
-                            <input
-                              type="tel"
-                              required
-                              placeholder="Número de celular"
-                              value={userPhone}
-                              onChange={(e) => setUserPhone(e.target.value)}
-                              className="w-full px-4 py-3 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors"
-                            />
+                      {/* Line items */}
+                      <div className="px-6 py-4 min-h-[100px]">
+                        <div className="flex justify-between items-center mb-2 pb-1.5 border-b border-dark-bg/8">
+                          <span className="text-[8px] font-body font-bold text-dark-bg/40 tracking-widest uppercase">Servicio</span>
+                          <span className="text-[8px] font-body font-bold text-dark-bg/40 tracking-widest uppercase">Subtotal</span>
+                        </div>
+                        <AnimatePresence initial={false}>
+                          {receiptItems.length === 0 ? (
+                            <motion.p key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[10px] font-body italic text-dark-bg/30 text-center py-3">
+                              Ningún servicio seleccionado
+                            </motion.p>
+                          ) : (
+                            receiptItems.map((item, i) => (
+                              <motion.div
+                                key={item.label}
+                                initial={{ opacity: 0, x: -8, height: 0 }}
+                                animate={{ opacity: 1, x: 0, height: "auto" }}
+                                exit={{ opacity: 0, x: 8, height: 0 }}
+                                transition={{ duration: 0.2, delay: i * 0.03 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="flex justify-between items-center py-2 border-b border-dark-bg/5 last:border-0">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-sm leading-none">{item.icon}</span>
+                                    <span className="text-[10px] font-body font-semibold text-dark-bg/75">{item.label}</span>
+                                  </div>
+                                  <motion.span
+                                    key={item.cost}
+                                    initial={{ scale: 1.1, color: "#BFA37E" }}
+                                    animate={{ scale: 1, color: "#1a1a1a" }}
+                                    transition={{ duration: 0.25 }}
+                                    className="font-mono text-[10px] font-bold"
+                                  >
+                                    {formatCOP(item.cost)}
+                                  </motion.span>
+                                </div>
+                              </motion.div>
+                            ))
+                          )}
+                        </AnimatePresence>
+                      </div>
 
-                            {/* Mobile Date & Time fields */}
-                            <div className="grid grid-cols-2 gap-3 text-left">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-dark-bg/70 block pl-1">Fecha del evento</label>
-                                <input
-                                  type="date"
-                                  required
-                                  value={bookingDate}
-                                  onChange={(e) => setBookingDate(e.target.value)}
-                                  className="w-full px-3 py-2.5 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-dark-bg/70 block pl-1">Hora de inicio</label>
-                                <input
-                                  type="time"
-                                  required
-                                  value={bookingTime}
-                                  onChange={(e) => setBookingTime(e.target.value)}
-                                  className="w-full px-3 py-2.5 bg-dark-bg/5 border border-dark-bg/20 rounded-xl focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors"
-                                />
-                              </div>
-                            </div>
+                      {/* Perforation */}
+                      <div className="relative flex items-center">
+                        <div className="absolute -left-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="absolute -right-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-5" />
+                      </div>
 
-                            {errorMessage && (
-                              <p className="text-primary-gold text-[11px] font-bold text-center leading-relaxed max-w-xs mx-auto pt-1 bg-red-500/10 p-2 rounded-xl border border-red-500/20">
-                                {errorMessage}
-                              </p>
-                            )}
-
-                            <button
-                              type="submit"
-                              disabled={totalCost === 0 || isSubmitLoading}
-                              className="w-full bg-primary-gold hover:bg-primary-gold-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 text-xs cursor-pointer disabled:opacity-50 mt-4"
-                            >
-                              {isSubmitLoading ? (
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                              ) : (
-                                <>
-                                  <span>Solicitar Cotización</span>
-                                  <ArrowRight className="w-3.5 h-3.5 text-white" />
-                                </>
-                              )}
-                            </button>
-                          </form>
-                        ) : (
-                          <div className="bg-dark-bg/5 border border-primary-gold/20 p-4 rounded-xl text-center space-y-2.5 mt-2">
-                            <div className="w-8 h-8 bg-primary-gold/20 text-primary-gold rounded-full flex items-center justify-center mx-auto text-base">
-                              ✓
-                            </div>
-                            <p className="text-[11px] text-dark-bg/90 leading-relaxed">
-                              ¡Listo, <strong>{userName}</strong>! Te enviaremos el presupuesto de <strong>{formatCOP(totalCost)}</strong> a Whatsapp.
-                            </p>
-                            <button
-                              onClick={() => {
-                                setIsBooked(false);
-                                setUserName("");
-                                setUserPhone("");
-                              }}
-                              className="text-[10px] text-primary-gold hover:underline cursor-pointer"
-                            >
-                              Hacer otra simulación
-                            </button>
+                      {/* Total */}
+                      <div className="px-6 py-4">
+                        <div className="flex justify-between items-end">
+                          <div>
+                            <p className="text-[8px] font-body font-bold tracking-widest uppercase text-dark-bg/40 mb-1">Total Estimado</p>
+                            <p className="text-[8px] font-body text-dark-bg/30">Ref. aproximada</p>
                           </div>
-                        )}
-                      </AnimatePresence>
+                          <motion.span
+                            key={totalCost}
+                            initial={{ scale: 1.08, color: "#BFA37E" }}
+                            animate={{ scale: 1, color: "#1a1a1a" }}
+                            transition={{ duration: 0.3, type: "spring", bounce: 0.3 }}
+                            className="font-mono font-bold text-xl text-dark-bg"
+                          >
+                            {formatCOP(totalCost)}
+                          </motion.span>
+                        </div>
+                      </div>
+
+                      {/* Perforation */}
+                      <div className="relative flex items-center">
+                        <div className="absolute -left-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="absolute -right-3 w-6 h-6 bg-dark-bg rounded-full z-10" />
+                        <div className="w-full border-t-2 border-dashed border-[#BFA37E]/30 mx-5" />
+                      </div>
+
+                      {/* Mobile form */}
+                      <div className="px-6 py-5">
+                        <AnimatePresence mode="wait">
+                          {!isBooked ? (
+                            <form onSubmit={handleBookSubmit} className="space-y-2.5">
+                              <p className="text-[8px] font-body font-bold tracking-widest uppercase text-dark-bg/40 mb-2">Completa para confirmar</p>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Tu nombre completo"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                className="w-full px-4 py-3 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors rounded-none font-body"
+                              />
+                              <input
+                                type="tel"
+                                required
+                                placeholder="Número de celular"
+                                value={userPhone}
+                                onChange={(e) => setUserPhone(e.target.value)}
+                                className="w-full px-4 py-3 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none placeholder-dark-bg/30 text-dark-bg text-xs transition-colors rounded-none font-body"
+                              />
+                              <div className="grid grid-cols-2 gap-2 text-left">
+                                <div className="space-y-1">
+                                  <label className="text-[8px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Fecha</label>
+                                  <input
+                                    type="date"
+                                    required
+                                    value={bookingDate}
+                                    onChange={(e) => setBookingDate(e.target.value)}
+                                    className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[8px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Hora inicio</label>
+                                  <input
+                                    type="time"
+                                    required
+                                    value={bookingTime}
+                                    onChange={(e) => setBookingTime(e.target.value)}
+                                    className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
+                                  />
+                                </div>
+                              </div>
+                              {errorMessage && (
+                                <p className="text-red-600 text-[10px] font-body font-bold text-center bg-red-50 p-2 border border-red-200">
+                                  {errorMessage}
+                                </p>
+                              )}
+                              <button
+                                type="submit"
+                                disabled={totalCost === 0 || isSubmitLoading}
+                                className="w-full bg-gradient-to-r from-primary-gold to-[#8C7355] text-white font-body font-bold py-3.5 transition-all shadow-md flex items-center justify-center gap-1.5 text-xs cursor-pointer disabled:opacity-50 mt-4 tracking-widest uppercase rounded-none"
+                              >
+                                {isSubmitLoading ? (
+                                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <>
+                                    <span>Solicitar Cotización</span>
+                                    <ArrowRight className="w-3.5 h-3.5 text-white" />
+                                  </>
+                                )}
+                              </button>
+                            </form>
+                          ) : (
+                            <div className="text-center space-y-3 py-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-primary-gold to-[#8C7355] rounded-full flex items-center justify-center mx-auto">
+                                <Check className="w-5 h-5 text-white" />
+                              </div>
+                              <p className="text-[11px] text-dark-bg/90 leading-relaxed font-body">
+                                ¡Listo, <strong>{userName}</strong>! Te enviaremos el presupuesto de <strong>{formatCOP(totalCost)}</strong> a tu Whatsapp.
+                              </p>
+                              <button
+                                onClick={() => { setIsBooked(false); setUserName(""); setUserPhone(""); }}
+                                className="text-[10px] text-primary-gold hover:underline cursor-pointer font-body"
+                              >
+                                Hacer otra simulación
+                              </button>
+                            </div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
 
-                    {/* Ondas inferiores */}
-                    <div 
-                      className="absolute bottom-0 left-0 w-full h-[14px]" 
+                    {/* Scalloped bottom edge */}
+                    <div
+                      className="w-full h-4 bg-[#FAFAF7]"
                       style={{
-                        background: 'radial-gradient(circle at 10px 0, transparent 10px, #0F0F10 11px)',
-                        backgroundSize: '28px 14px',
-                        backgroundPosition: 'bottom'
-                      }} 
+                        clipPath: "polygon(0 0, 100% 0, 100% 100%, 97.5% 60%, 95% 100%, 92.5% 60%, 90% 100%, 87.5% 60%, 85% 100%, 82.5% 60%, 80% 100%, 77.5% 60%, 75% 100%, 72.5% 60%, 70% 100%, 67.5% 60%, 65% 100%, 62.5% 60%, 60% 100%, 57.5% 60%, 55% 100%, 52.5% 60%, 50% 100%, 47.5% 60%, 45% 100%, 42.5% 60%, 40% 100%, 37.5% 60%, 35% 100%, 32.5% 60%, 30% 100%, 27.5% 60%, 25% 100%, 22.5% 60%, 20% 100%, 17.5% 60%, 15% 100%, 12.5% 60%, 10% 100%, 7.5% 60%, 5% 100%, 2.5% 60%, 0 100%)"
+                      }}
                     />
                   </div>
                 </motion.div>
