@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function Home() {
-  const [isFaqOpen, setIsFaqOpen] = useState(false);
+  const [faqState, setFaqState] = useState<'default' | 'open' | 'closed'>('default');
   return (
     <>
       {/* Navigation */}
@@ -82,17 +82,23 @@ export default function Home() {
               </div>
 
               {/* FAQ Dropdown Animado */}
-              <div className="pt-8 mx-auto max-w-2xl text-left">
+              <div className="pt-8 mx-auto w-full text-left border-t border-white/20 mt-8">
                 <div 
-                  className="group border border-white/20 bg-white/5 cursor-pointer rounded-none"
-                  onClick={() => setIsFaqOpen(!isFaqOpen)}
+                  className="group cursor-pointer rounded-none"
+                  onClick={() => {
+                    if (faqState === 'default' || faqState === 'closed') {
+                      setFaqState('open');
+                    } else {
+                      setFaqState('closed');
+                    }
+                  }}
                 >
-                  <div className="flex justify-between items-center p-4">
+                  <div className="flex justify-between items-center py-4 px-2 sm:px-4">
                     <span className="text-white font-bold tracking-wide">Preguntas Frecuentes</span>
-                    <ChevronDown className={`w-5 h-5 text-white transition-transform duration-300 group-hover:rotate-180 ${isFaqOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-5 h-5 text-white transition-transform duration-300 ${faqState === 'default' ? 'group-hover:rotate-180' : ''} ${faqState === 'open' ? 'rotate-180' : ''}`} />
                   </div>
-                  <div className={`overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-[500px] ${isFaqOpen ? 'max-h-[500px]' : 'max-h-0'}`}>
-                    <div className="p-4 pt-0 space-y-4">
+                  <div className={`overflow-hidden transition-all duration-500 ease-in-out ${faqState === 'default' ? 'group-hover:max-h-[500px]' : ''} ${faqState === 'open' ? 'max-h-[500px]' : 'max-h-0'}`}>
+                    <div className="px-2 sm:px-4 pb-4 space-y-4">
                       <div className="border-t border-white/10 pt-4">
                         <p className="text-white font-semibold text-sm">¿Tienen un mínimo de horas requeridas?</p>
                         <p className="text-white/70 text-xs mt-1">Sí, el mínimo de contratación para nuestro personal y equipo es de 4 horas para asegurar la mejor calidad de servicio.</p>
