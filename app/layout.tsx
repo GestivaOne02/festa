@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import "./globals.css";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -35,7 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${playfair.variable} ${montserrat.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <WhatsAppButton />
+      </body>
     </html>
   );
 }
