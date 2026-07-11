@@ -5,6 +5,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Camera, Sparkles } from "lucide-react";
 
 type GalleryImage = {
   url: string;
@@ -32,7 +33,7 @@ export default function Gallery() {
         {/* Gallery Grid / Mobile Carousel */}
         {images.length === 0 ? (
           <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
-            <div className="text-3xl">📸</div>
+            <Camera className="w-8 h-8 text-secondary-white mx-auto" />
             <h3 className="font-heading text-lg text-secondary-white font-bold">Galería de fotos</h3>
             <p className="text-xs sm:text-sm text-secondary-white/70 leading-relaxed font-light">
               Aún no hay fotos registradas en la galería. Las imágenes del portafolio se mostrarán aquí una vez configuradas en el componente.
@@ -61,7 +62,7 @@ export default function Gallery() {
                 {/* Overlay on hover / visible always on mobile for context */}
                 <div className="absolute inset-0 bg-secondary-white/40 md:bg-secondary-white/60 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
                   <div className="text-center space-y-1.5 translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="inline-block text-primary-gold text-xs sm:text-sm">✨</span>
+                    <Sparkles className="w-4 h-4 text-primary-gold inline-block" />
                     <h3 className="font-heading text-base sm:text-lg font-bold text-white">
                       {image.title}
                     </h3>

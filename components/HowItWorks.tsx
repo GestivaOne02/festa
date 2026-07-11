@@ -60,7 +60,7 @@ export default function HowItWorks() {
               return (
                 <motion.div
                   key={step.number}
-                  className="bg-dark-bg border border-primary-gold/5 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center space-y-4 relative group"
+                  className="bg-dark-bg border border-primary-gold/5 p-6 rounded-none shadow-sm flex flex-col items-center text-center space-y-4 relative group"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
@@ -118,7 +118,7 @@ export default function HowItWorks() {
                   </div>
 
                   {/* Content card */}
-                  <div className="bg-dark-bg border border-primary-gold/5 p-5 rounded-2xl shadow-sm w-full space-y-1.5 relative">
+                  <div className="bg-dark-bg border border-primary-gold/5 p-5 rounded-none shadow-sm w-full space-y-1.5 relative">
                     <span className="text-[9px] font-mono font-bold text-primary-gold bg-primary-gold/10 px-2 py-0.5 rounded-full absolute top-4 right-4">
                       Paso {step.number}
                     </span>

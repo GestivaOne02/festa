@@ -8,7 +8,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Gallery from "@/components/Gallery";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, PartyPopper } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -48,8 +48,12 @@ export default function Home() {
               transition={{ type: "spring", bounce: 0.1 }}
             >
               {/* Decorative sparkle */}
-              <div className="absolute top-6 left-6 text-2xl opacity-30 select-none">🎉</div>
-              <div className="absolute bottom-6 right-6 text-2xl opacity-30 select-none">✨</div>
+              <div className="absolute top-6 left-6 opacity-30 select-none">
+                <PartyPopper className="w-8 h-8 text-white" />
+              </div>
+              <div className="absolute bottom-6 right-6 opacity-30 select-none">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
 
               <span className="inline-flex items-center gap-1.5 bg-white/20 text-white font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
                 <Sparkles className="w-3.5 h-3.5 fill-primary-gold text-primary-gold" />

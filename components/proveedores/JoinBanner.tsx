@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Handshake, ArrowRight } from "lucide-react";
+import { Handshake, ArrowRight, Sparkles } from "lucide-react";
 
 // Secondary CTA inviting professionals to register as providers
 export default function JoinBanner() {
@@ -15,8 +15,12 @@ export default function JoinBanner() {
       transition={{ type: "spring", bounce: 0.1 }}
     >
       {/* Decorative sparkles matching landing CTA */}
-      <div className="absolute top-5 right-6 text-2xl opacity-30 select-none">🤝</div>
-      <div className="absolute bottom-5 left-6 text-2xl opacity-20 select-none">✨</div>
+      <div className="absolute top-5 right-6 opacity-30 select-none">
+        <Handshake className="w-8 h-8 text-white" />
+      </div>
+      <div className="absolute bottom-5 left-6 opacity-20 select-none">
+        <Sparkles className="w-8 h-8 text-white" />
+      </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left">
         <div className="space-y-2 max-w-xl">

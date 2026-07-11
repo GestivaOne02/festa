@@ -37,7 +37,7 @@ export default function Testimonials() {
         {/* Testimonials Grid / Mobile Carousel */}
         {testimonials.length === 0 ? (
           <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
-            <div className="text-3xl">⭐</div>
+            <Star className="w-8 h-8 text-secondary-white mx-auto" />
             <h3 className="font-heading text-lg text-secondary-white font-bold">Opiniones de clientes</h3>
             <p className="text-xs sm:text-sm text-secondary-white/70 leading-relaxed font-light">
               Aún no hay opiniones registradas. Los testimonios reales de tus clientes se mostrarán aquí una vez configurados en el componente.
