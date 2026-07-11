@@ -48,7 +48,7 @@ export default function Footer() {
                 href="https://www.gestivaone.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 bg-dark-bg/10 hover:bg-[#7c3aee] text-dark-bg rounded-full flex items-center justify-center transition-colors p-2"
+                className="w-9 h-9 bg-dark-bg/10 hover:bg-[#7c3aee] text-dark-bg hover:text-white rounded-full flex items-center justify-center transition-colors p-2"
                 aria-label="GestivaOne"
                 title="GestivaOne"
               >
