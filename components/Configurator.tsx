@@ -530,7 +530,7 @@ export default function Configurator() {
 
               <div className="p-10">
                 {/* Calculations Breakdown */}
-                <div className="space-y-4 text-sm font-light mb-8">
+                <div className="space-y-2 text-sm font-light mb-8">
                   {includeWaiters && (
                     <div className="flex justify-between items-center">
                       <span className="text-dark-bg/60 text-xs font-bold tracking-widest uppercase">{waiterCount} Meseros x {hours}h</span>
@@ -1040,7 +1040,7 @@ export default function Configurator() {
 
                     <div className="p-6">
                       {/* Calculations Breakdown Mobile */}
-                      <div className="space-y-3.5 text-[10px] font-light max-h-[160px] overflow-y-auto pr-1 mb-6">
+                      <div className="space-y-1.5 text-[10px] font-light max-h-[160px] overflow-y-auto pr-1 mb-6">
                         {includeWaiters && (
                           <div className="flex justify-between items-center">
                             <span className="text-dark-bg/60 font-bold tracking-widest uppercase">{waiterCount} Meseros x {hours}h</span>
