@@ -1196,17 +1196,17 @@ export default function Configurator() {
 
           {/* Sticky total bar at the very bottom (only on Step 1 and Step 2 in mobile) */}
           {step < 3 && (
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-secondary-white text-dark-bg border-t border-primary-gold/15 shadow-[0_-8px_15px_rgba(0,0,0,0.1)] px-5 py-3 flex justify-between items-center">
-              <div className="text-left">
-                <span className="text-[9px] text-dark-bg/50 uppercase tracking-widest block">Total estimado</span>
-                <span className="text-lg font-heading font-extrabold text-primary-gold font-mono leading-none">{formatCOP(totalCost)}</span>
+            <div className="fixed bottom-0 left-0 right-0 z-40 bg-secondary-white text-dark-bg border-t border-primary-gold/15 shadow-[0_-8px_15px_rgba(0,0,0,0.1)] flex justify-between items-stretch h-[60px]">
+              <div className="text-left flex flex-col justify-center pl-5 pr-2">
+                <span className="text-[9px] text-dark-bg font-bold uppercase tracking-widest block">Total estimado</span>
+                <span className="text-lg font-heading font-extrabold text-primary-gold font-mono leading-none mt-0.5">{formatCOP(totalCost)}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsBottomSheetOpen(true)}
-                className="bg-primary-gold/20 hover:bg-primary-gold/30 border border-primary-gold/40 text-primary-gold font-bold px-4 py-2 rounded-full text-[10px] transition-all flex items-center gap-1 cursor-pointer"
+                className="bg-primary-gold hover:bg-primary-gold/90 text-white font-bold px-4 flex-1 max-w-[160px] flex items-center justify-center text-xs transition-colors cursor-pointer tracking-wide"
               >
-                <span>Ver detalle ↑</span>
+                <span>Continuar Cotización</span>
               </button>
             </div>
           )}
