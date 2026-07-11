@@ -519,17 +519,14 @@ export default function Configurator() {
           <div className="col-span-5 relative sticky top-24">
             <div className="bg-secondary-white text-dark-bg rounded-[30px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative pb-[18px]">
               
-              {/* Muescas laterales */}
-              <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -left-[21px] top-[260px] z-10" />
-              <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -right-[21px] top-[260px] z-10" />
-
-              <div className="p-10 text-center">
-                <div className="text-5xl mb-4">🎉</div>
-                <h3 className="font-heading text-4xl font-bold mb-2">Resumen</h3>
-                <p className="text-dark-bg/60 text-lg font-light">Cotización de tu evento</p>
+              <div className="relative flex items-center justify-center py-6 mt-4">
+                {/* Muescas laterales */}
+                <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -left-[21px] z-10" />
+                <div className="absolute w-[42px] h-[42px] bg-dark-bg rounded-full -right-[21px] z-10" />
+                
+                {/* Dashed line */}
+                <div className="w-full mx-10 border-t-2 border-dashed border-dark-bg/20" />
               </div>
-
-              <div className="mx-10 border-t-2 border-dashed border-dark-bg/20" />
 
               <div className="p-10">
                 {/* Calculations Breakdown */}
@@ -1032,17 +1029,14 @@ export default function Configurator() {
                 >
                   <div className="bg-secondary-white text-dark-bg rounded-[24px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative pb-[14px]">
                     
-                    {/* Muescas laterales */}
-                    <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -left-[15px] top-[140px] z-10" />
-                    <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -right-[15px] top-[140px] z-10" />
-
-                    <div className="p-6 text-center">
-                      <div className="text-3xl mb-2">🎉</div>
-                      <h3 className="font-heading text-xl font-bold mb-1 text-dark-bg">Resumen Final</h3>
-                      <p className="text-dark-bg/60 text-xs font-light">Cotización de tu evento</p>
+                    <div className="relative flex items-center justify-center py-5 mt-3">
+                      {/* Muescas laterales */}
+                      <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -left-[15px] z-10" />
+                      <div className="absolute w-[30px] h-[30px] bg-dark-bg rounded-full -right-[15px] z-10" />
+                      
+                      {/* Dashed line */}
+                      <div className="w-full mx-6 border-t-2 border-dashed border-dark-bg/20" />
                     </div>
-
-                    <div className="mx-6 border-t-2 border-dashed border-dark-bg/20" />
 
                     <div className="p-6">
                       {/* Calculations Breakdown Mobile */}
