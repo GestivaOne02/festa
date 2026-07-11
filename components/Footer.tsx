@@ -17,7 +17,7 @@ export default function Footer() {
             <Link href="/#inicio">
               {/* Waiter logo with white/orange override details */}
               <div className="inline-block bg-dark-bg/5 px-4 py-1.5 rounded-2xl border border-dark-bg/10 scale-90 origin-left">
-                <Logo />
+                <Logo darkText />
               </div>
             </Link>
             <p className="text-xs md:text-sm text-dark-bg/70 font-light leading-relaxed max-w-sm line-clamp-2 md:line-clamp-none">
