@@ -107,20 +107,20 @@ export default function Navbar() {
               </Link>
               
               {/* Right CTA Buttons */}
-              <div className="flex-1 flex justify-end items-center gap-3 sm:gap-6">
+              <div className="flex-1 flex justify-end items-center gap-2 md:gap-6">
                 <Link
                   href="/login"
-                  className="font-body text-[10px] sm:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
+                  className="font-body text-[9px] md:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
                 >
-                  <span className="hidden sm:inline">Iniciar sesión</span>
-                  <span className="sm:hidden">Ingresar</span>
+                  <span className="hidden md:inline">Iniciar sesión</span>
+                  <span className="md:hidden">Ingresar</span>
                 </Link>
                 <a
                   href="/#cotizador"
-                  className="font-body text-[10px] sm:text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-3 sm:px-6 py-1.5 sm:py-3 transition-colors duration-300"
+                  className="font-body text-[9px] md:text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-2.5 md:px-6 py-1.5 md:py-3 transition-colors duration-300"
                 >
-                  <span className="hidden sm:inline">Cotiza tu evento</span>
-                  <span className="sm:hidden">Cotizar</span>
+                  <span className="hidden md:inline">Cotiza tu evento</span>
+                  <span className="md:hidden">Cotizar</span>
                 </a>
               </div>
             </div>
