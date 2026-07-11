@@ -94,46 +94,59 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/#inicio">
-              <Logo />
-            </Link>
+          {/* Desktop Layout */}
+          <div className="hidden md:flex flex-col gap-4">
+            {/* Top Row */}
+            <div className="flex items-center justify-between">
+              {/* Empty left block for center balance */}
+              <div className="flex-1" />
+              
+              {/* Center Logo */}
+              <Link href="/#inicio" className="flex-1 flex justify-center">
+                <Logo />
+              </Link>
+              
+              {/* Right CTA Buttons */}
+              <div className="flex-1 flex justify-end items-center gap-6">
+                <Link
+                  href="/login"
+                  className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
+                >
+                  Iniciar sesión
+                </Link>
+                <a
+                  href="/#cotizador"
+                  className="font-body text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-6 py-3 transition-colors duration-300"
+                >
+                  Cotiza tu evento
+                </a>
+              </div>
+            </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            {/* Bottom Row - Navigation Links */}
+            <nav className="flex items-center justify-center gap-8">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors relative group py-2"
+                  className="font-body text-[11px] lg:text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors relative group py-2"
                 >
                   {link.label}
                   <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary-gold transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
             </nav>
+          </div>
 
-            {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-6">
-              <Link
-                href="/login"
-                className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
-              >
-                Iniciar sesión
-              </Link>
-              <a
-                href="/#cotizador"
-                className="font-body text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-6 py-3 transition-colors duration-300"
-              >
-                Cotiza tu evento
-              </a>
-            </div>
+          {/* Mobile Layout */}
+          <div className="flex md:hidden items-center justify-between">
+            <Link href="/#inicio">
+              <Logo />
+            </Link>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(true)}
-              className="md:hidden p-2 text-primary-gold focus:outline-none cursor-pointer"
+              className="p-2 text-primary-gold focus:outline-none cursor-pointer"
               aria-label="Open menu"
             >
               <Menu className="w-6 h-6" />
