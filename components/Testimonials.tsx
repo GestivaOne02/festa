@@ -36,7 +36,7 @@ export default function Testimonials() {
 
         {/* Testimonials Grid / Mobile Carousel */}
         {testimonials.length === 0 ? (
-          <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
+          <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-none max-w-xl mx-auto space-y-4 shadow-sm">
             <Star className="w-8 h-8 text-secondary-white mx-auto" />
             <h3 className="font-heading text-lg text-secondary-white font-bold">Opiniones de clientes</h3>
             <p className="text-xs sm:text-sm text-secondary-white/70 leading-relaxed font-light">
@@ -48,7 +48,7 @@ export default function Testimonials() {
             {testimonials.map((test, index) => (
               <motion.div
                 key={index}
-                className="bg-dark-bg border border-primary-gold/10 p-6 sm:p-8 rounded-[2rem] shadow-sm relative flex flex-col justify-between snap-center shrink-0 w-[80vw] max-w-[300px] md:w-auto md:max-w-none md:shrink"
+                className="bg-dark-bg border border-primary-gold/10 p-6 sm:p-8 rounded-none shadow-sm relative flex flex-col justify-between snap-center shrink-0 w-[80vw] max-w-[300px] md:w-auto md:max-w-none md:shrink"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}

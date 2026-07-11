@@ -814,7 +814,7 @@ export default function Configurator() {
                     <div className="flex flex-col">
                       <div
                         onClick={() => setIncludeWaiters(!includeWaiters)}
-                        className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                        className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                           includeWaiters ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                         }`}
                       >
@@ -834,7 +834,7 @@ export default function Configurator() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden bg-primary-gold/[0.01] px-4 pb-3 rounded-b-xl border-x border-b border-primary-gold/15 -mt-2 z-10"
+                            className="overflow-hidden bg-primary-gold/[0.01] px-3 sm:px-4 pb-3 rounded-none border-x border-b border-primary-gold/15 -mt-2 z-10"
                           >
                             <div className="flex items-center justify-between pt-2">
                               <span className="text-[10px] font-semibold text-secondary-white/70">¿Cuántos necesitas?</span>
@@ -867,7 +867,7 @@ export default function Configurator() {
                     <div className="flex flex-col">
                       <div
                         onClick={() => setIncludeChefs(!includeChefs)}
-                        className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                        className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                           includeChefs ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                         }`}
                       >
@@ -887,7 +887,7 @@ export default function Configurator() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden bg-primary-gold/[0.01] px-4 pb-3 rounded-b-xl border-x border-b border-primary-gold/15 -mt-2 z-10"
+                            className="overflow-hidden bg-primary-gold/[0.01] px-3 sm:px-4 pb-3 rounded-none border-x border-b border-primary-gold/15 -mt-2 z-10"
                           >
                             <div className="flex items-center justify-between pt-2">
                               <span className="text-[10px] font-semibold text-secondary-white/70">¿Cuántos necesitas?</span>
@@ -919,7 +919,7 @@ export default function Configurator() {
                     {/* Utensils Item */}
                     <div
                       onClick={() => setIncludeUtensils(!includeUtensils)}
-                      className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                         includeUtensils ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                       }`}
                     >
@@ -937,7 +937,7 @@ export default function Configurator() {
                     {/* Furniture Item */}
                     <div
                       onClick={() => setIncludeFurniture(!includeFurniture)}
-                      className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                         includeFurniture ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                       }`}
                     >
@@ -955,7 +955,7 @@ export default function Configurator() {
                     {/* Space Item */}
                     <div
                       onClick={() => setIncludeSpace(!includeSpace)}
-                      className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                         includeSpace ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                       }`}
                     >
@@ -973,7 +973,7 @@ export default function Configurator() {
                     {/* Catering Item */}
                     <div
                       onClick={() => setIncludeCatering(!includeCatering)}
-                      className={`flex justify-between items-center h-14 px-4 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex justify-between items-center h-14 px-3 sm:px-4 rounded-none border transition-all cursor-pointer ${
                         includeCatering ? "border-primary-gold bg-primary-gold/[0.03]" : "border-primary-gold/10"
                       }`}
                     >

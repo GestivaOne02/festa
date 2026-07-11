@@ -32,7 +32,7 @@ export default function Gallery() {
 
         {/* Gallery Grid / Mobile Carousel */}
         {images.length === 0 ? (
-          <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
+          <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-none max-w-xl mx-auto space-y-4 shadow-sm">
             <Camera className="w-8 h-8 text-secondary-white mx-auto" />
             <h3 className="font-heading text-lg text-secondary-white font-bold">Galería de fotos</h3>
             <p className="text-xs sm:text-sm text-secondary-white/70 leading-relaxed font-light">
@@ -44,7 +44,7 @@ export default function Gallery() {
             {images.map((image, index) => (
               <motion.div
                 key={index}
-                className="relative h-60 md:h-64 rounded-[2rem] overflow-hidden border-2 border-primary-gold/5 shadow-md group cursor-pointer snap-center shrink-0 w-[78vw] max-w-[280px] md:w-auto md:max-w-none md:shrink"
+                className="relative h-60 md:h-64 rounded-none overflow-hidden border-2 border-primary-gold/5 shadow-md group cursor-pointer snap-center shrink-0 w-[78vw] max-w-[280px] md:w-auto md:max-w-none md:shrink"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}

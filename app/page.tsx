@@ -18,7 +18,7 @@ export default function Home() {
       <Navbar />
 
       {/* Main content */}
-      <main className="overflow-hidden">
+      <main className="overflow-hidden pb-24 md:pb-0">
         {/* 1. Hero Banner */}
         <Hero />
 

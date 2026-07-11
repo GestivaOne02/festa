@@ -47,7 +47,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-dark-bg/30" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-16 sm:pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           {/* Text Content aligned to the left */}
@@ -60,7 +60,7 @@ export default function Hero() {
             {/* Promo Tag */}
             <motion.div
               variants={itemVariants}
-              className="font-body text-xs md:text-sm uppercase tracking-[0.2em] text-primary-gold font-semibold"
+              className="font-body text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.2em] text-primary-gold font-semibold"
             >
               Creamos momentos inolvidables
             </motion.div>
@@ -68,7 +68,7 @@ export default function Hero() {
             {/* Title */}
             <motion.h1
               variants={itemVariants}
-              className="text-4xl sm:text-6xl md:text-7xl font-heading text-secondary-white leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-secondary-white leading-tight"
             >
               EVENTOS <br />
               EXTRAORDINARIOS
