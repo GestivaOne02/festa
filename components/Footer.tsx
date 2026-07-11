@@ -66,15 +66,15 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs md:text-sm text-dark-bg/75 font-light">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
-                <span>+57 (000) 000-0000</span>
+                <span>+57 317 3823814</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
-                <span className="break-all">contacto@tudominio.com</span>
+                <span className="break-all">gustavoadolfogrisalesmercado@gmail.com</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
-                <span>Ciudad, País</span>
+                <span>Barranquilla, Atlántico</span>
               </li>
             </ul>
           </div>
