@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.GESTIVA_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.GESTIVA_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.GESTIVA_SUPABASE_URL || 'https://placeholder-project.supabase.co';
+const supabaseAnonKey = process.env.GESTIVA_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("⚠️ Advertencia: Credenciales de Supabase no cargadas en el entorno.");
+if (!process.env.GESTIVA_SUPABASE_URL || !process.env.GESTIVA_SUPABASE_ANON_KEY) {
+  console.warn("⚠️ Advertencia: Credenciales de Supabase no cargadas en el entorno. Usando placeholders para evitar error.");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
