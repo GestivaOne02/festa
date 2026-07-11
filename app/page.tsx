@@ -40,10 +40,10 @@ export default function Home() {
         <Testimonials />
 
         {/* 7. Final Call to Action Banner */}
-        <section className="py-10 md:py-20 bg-dark-bg relative">
+        <section className="py-12 md:py-24 bg-gradient-to-r from-primary-gold to-primary-gold-dark relative">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="bg-gradient-to-r from-primary-gold to-primary-gold-dark text-white rounded-none p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6"
+              className="text-white rounded-none p-4 sm:p-8 relative overflow-hidden text-center space-y-6"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -94,7 +94,7 @@ export default function Home() {
                   }}
                 >
                   <div className="flex justify-between items-center py-4 px-2 sm:px-4">
-                    <span className="text-white font-bold tracking-wide">Preguntas Frecuentes</span>
+                    <span className="text-white font-body font-semibold tracking-wide">Preguntas Frecuentes</span>
                     <ChevronDown className={`w-5 h-5 text-white transition-transform duration-300 ${faqState === 'default' ? 'group-hover:rotate-180' : ''} ${faqState === 'open' ? 'rotate-180' : ''}`} />
                   </div>
                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${faqState === 'default' ? 'group-hover:max-h-[500px]' : ''} ${faqState === 'open' ? 'max-h-[500px]' : 'max-h-0'}`}>
