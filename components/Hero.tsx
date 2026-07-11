@@ -105,7 +105,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-[90dvh] flex items-center overflow-hidden group"
+      className="relative min-h-[100svh] md:min-h-[90svh] flex items-center overflow-hidden group"
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
