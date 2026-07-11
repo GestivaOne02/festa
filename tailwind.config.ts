@@ -9,29 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          cream: "#FFFDF9",
-          dark: "#2A0E06",
-          orange: {
-            light: "#F97316",
-            DEFAULT: "#EA580C",
-            dark: "#C2410C",
-          },
-          yellow: {
-            light: "#FDE047",
-            DEFAULT: "#FACC15",
-            dark: "#EAB308",
-          },
-          brown: {
-            light: "#854D0E",
-            DEFAULT: "#431407",
-            dark: "#1A0500",
-          },
+        primary: {
+          gold: "#BFA37E",
+        },
+        secondary: {
+          white: "#F3F4F6",
+          gray: "#D1D5DB",
+        },
+        dark: {
+          bg: "#0F0F10",
         },
       },
       fontFamily: {
-        heading: ["var(--font-fredoka)", "sans-serif"],
-        body: ["var(--font-nunito-sans)", "sans-serif"],
+        heading: ["var(--font-playfair)", "serif"],
+        body: ["var(--font-montserrat)", "sans-serif"],
       },
     },
   },

@@ -16,25 +16,25 @@ export default function Gallery() {
   const images: Array<GalleryImage> = [];
 
   return (
-    <section id="galeria" className="pt-14 pb-10 md:py-24 bg-brand-cream">
+    <section id="galeria" className="pt-14 pb-10 md:py-24 bg-dark-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 space-y-3 md:space-y-4">
-          <h2 className="text-2xl sm:text-4xl font-heading text-brand-brown">
+          <h2 className="text-2xl sm:text-4xl font-heading text-secondary-white">
             Momentos Inolvidables
           </h2>
-          <p className="text-sm sm:text-lg text-brand-brown/80 font-light px-2 sm:px-0">
+          <p className="text-sm sm:text-lg text-secondary-white/80 font-light px-2 sm:px-0">
             Una pequeña muestra de los eventos y celebraciones que hemos ayudado a crear.
           </p>
         </div>
 
         {/* Gallery Grid / Mobile Carousel */}
         {images.length === 0 ? (
-          <div className="text-center p-8 sm:p-12 bg-brand-cream border border-brand-orange/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
+          <div className="text-center p-8 sm:p-12 bg-dark-bg border border-primary-gold/10 rounded-[2.5rem] max-w-xl mx-auto space-y-4 shadow-sm">
             <div className="text-3xl">📸</div>
-            <h3 className="font-heading text-lg text-brand-brown font-bold">Galería de fotos</h3>
-            <p className="text-xs sm:text-sm text-brand-brown/70 leading-relaxed font-light">
+            <h3 className="font-heading text-lg text-secondary-white font-bold">Galería de fotos</h3>
+            <p className="text-xs sm:text-sm text-secondary-white/70 leading-relaxed font-light">
               Aún no hay fotos registradas en la galería. Las imágenes del portafolio se mostrarán aquí una vez configuradas en el componente.
             </p>
           </div>
@@ -43,7 +43,7 @@ export default function Gallery() {
             {images.map((image, index) => (
               <motion.div
                 key={index}
-                className="relative h-60 md:h-64 rounded-[2rem] overflow-hidden border-2 border-brand-orange/5 shadow-md group cursor-pointer snap-center shrink-0 w-[78vw] max-w-[280px] md:w-auto md:max-w-none md:shrink"
+                className="relative h-60 md:h-64 rounded-[2rem] overflow-hidden border-2 border-primary-gold/5 shadow-md group cursor-pointer snap-center shrink-0 w-[78vw] max-w-[280px] md:w-auto md:max-w-none md:shrink"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -59,13 +59,13 @@ export default function Gallery() {
                 />
                 
                 {/* Overlay on hover / visible always on mobile for context */}
-                <div className="absolute inset-0 bg-brand-brown/40 md:bg-brand-brown/60 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-secondary-white/40 md:bg-secondary-white/60 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
                   <div className="text-center space-y-1.5 translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="inline-block text-brand-yellow text-xs sm:text-sm">✨</span>
+                    <span className="inline-block text-primary-gold text-xs sm:text-sm">✨</span>
                     <h3 className="font-heading text-base sm:text-lg font-bold text-white">
                       {image.title}
                     </h3>
-                    <p className="text-[10px] sm:text-xs text-brand-cream/80 font-light">Servicio por Horas</p>
+                    <p className="text-[10px] sm:text-xs text-dark-bg/80 font-light">Servicio por Horas</p>
                   </div>
                 </div>
               </motion.div>

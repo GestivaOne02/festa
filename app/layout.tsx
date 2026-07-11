@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Fredoka, Nunito_Sans } from "next/font/google";
+import { Playfair_Display, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const fredoka = Fredoka({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-fredoka",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
-const nunitoSans = Nunito_Sans({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["300", "400", "600", "700", "800"],
-  variable: "--font-nunito-sans",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${fredoka.variable} ${nunitoSans.variable}`}>
+    <html lang="es" className={`${playfair.variable} ${montserrat.variable}`}>
       <body>{children}</body>
     </html>
   );

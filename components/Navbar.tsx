@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./ui/Logo";
 
@@ -48,7 +48,6 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Hash links prefixed with "/" so they also work from /proveedores pages
   const navLinks = [
     { label: "Inicio", href: "/#inicio" },
     { label: "Servicios", href: "/#servicios" },
@@ -86,12 +85,12 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isOpen
-            ? "opacity-0 pointer-events-none" // Hide original navbar behind the menu to avoid duplicates
+            ? "opacity-0 pointer-events-none"
             : scrolled
-            ? "py-3 bg-brand-cream/90 backdrop-blur-md shadow-sm border-b border-brand-orange/10 opacity-100"
-            : "py-5 bg-transparent opacity-100"
+            ? "py-4 bg-dark-bg/90 backdrop-blur-md border-b border-primary-gold/20 opacity-100"
+            : "py-6 bg-transparent opacity-100"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,35 +106,34 @@ export default function Navbar() {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="font-medium text-brand-brown/80 hover:text-brand-orange transition-colors relative group py-2"
+                  className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors relative group py-2"
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-orange transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary-gold transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
             </nav>
 
             {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6">
               <Link
                 href="/login"
-                className="font-semibold text-brand-brown hover:text-brand-orange transition-colors px-4 py-2 rounded-full border border-transparent hover:border-brand-orange/20"
+                className="font-body text-xs uppercase tracking-widest text-secondary-white hover:text-primary-gold transition-colors"
               >
                 Iniciar sesión
               </Link>
               <a
                 href="/#cotizador"
-                className="flex items-center gap-2 bg-brand-orange text-white font-bold px-6 py-2.5 rounded-full hover:bg-brand-orange-dark shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all group"
+                className="font-body text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg px-6 py-3 transition-colors duration-300"
               >
-                <Sparkles className="w-4 h-4 text-brand-yellow group-hover:rotate-12 transition-transform" />
-                Cotiza tu fiesta
+                Cotiza tu evento
               </a>
             </div>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(true)}
-              className="md:hidden p-2 rounded-lg text-brand-brown hover:bg-brand-orange/10 focus:outline-none transition-colors cursor-pointer"
+              className="md:hidden p-2 text-primary-gold focus:outline-none cursor-pointer"
               aria-label="Open menu"
             >
               <Menu className="w-6 h-6" />
@@ -151,9 +149,9 @@ export default function Navbar() {
             {/* Backdrop overlay */}
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
+              animate={{ opacity: 0.8 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] md:hidden bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-[60] md:hidden bg-black/90 backdrop-blur-md"
               onClick={() => setIsOpen(false)}
             />
 
@@ -163,16 +161,16 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", bounce: 0.05, duration: 0.4 }}
-              className="fixed right-0 top-0 bottom-0 w-[85vw] max-w-[340px] h-[100dvh] bg-brand-cream p-6 shadow-2xl flex flex-col justify-between border-l border-brand-orange/10 z-[70] md:hidden overflow-hidden"
+              className="fixed right-0 top-0 bottom-0 w-[85vw] max-w-[340px] h-[100dvh] bg-dark-bg p-6 shadow-2xl flex flex-col justify-between border-l border-primary-gold/20 z-[70] md:hidden overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="space-y-6">
-                {/* Header in mobile panel (Aligned matching layout) */}
-                <div className="flex justify-between items-center h-14 border-b border-brand-orange/10 pb-2">
+              <div className="space-y-8">
+                {/* Header in mobile panel */}
+                <div className="flex justify-between items-center h-14 border-b border-primary-gold/20 pb-4">
                   <Logo />
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-full hover:bg-brand-orange/10 text-brand-brown cursor-pointer"
+                    className="p-2 text-primary-gold cursor-pointer"
                     aria-label="Close menu"
                   >
                     <X className="w-6 h-6" />
@@ -184,7 +182,7 @@ export default function Navbar() {
                   variants={menuContainerVariants}
                   initial="hidden"
                   animate="show"
-                  className="flex flex-col gap-2.5"
+                  className="flex flex-col gap-4"
                 >
                   {navLinks.map((link) => (
                     <motion.div key={link.label} variants={menuItemVariants}>
@@ -192,7 +190,7 @@ export default function Navbar() {
                         key={link.label}
                         href={link.href}
                         onClick={() => setIsOpen(false)}
-                        className="text-[18px] font-semibold text-brand-brown/95 hover:text-brand-orange py-3 px-4 rounded-xl hover:bg-brand-orange/5 transition-all flex items-center min-h-[48px]"
+                        className="font-body text-sm uppercase tracking-widest text-secondary-white hover:text-primary-gold block py-2 transition-colors"
                       >
                         {link.label}
                       </a>
@@ -202,21 +200,20 @@ export default function Navbar() {
               </div>
 
               {/* Drawer footer actions */}
-              <div className="flex flex-col gap-3.5 pt-6 border-t border-brand-orange/10 mb-2">
+              <div className="flex flex-col gap-4 pt-6 border-t border-primary-gold/20 mb-4">
                 <Link
                   href="/login"
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center font-bold text-brand-brown border border-brand-orange/20 py-3 rounded-full hover:bg-brand-orange/5 transition-colors text-sm"
+                  className="w-full text-center font-body text-xs uppercase tracking-widest text-secondary-white py-3 transition-colors hover:text-primary-gold"
                 >
                   Iniciar sesión
                 </Link>
                 <a
                   href="/#cotizador"
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center font-bold bg-brand-orange text-white py-3 rounded-full hover:bg-brand-orange-dark shadow-md flex items-center justify-center gap-2 text-sm"
+                  className="w-full text-center font-body text-xs uppercase tracking-widest text-primary-gold border border-primary-gold hover:bg-primary-gold hover:text-dark-bg py-3 transition-colors duration-300"
                 >
-                  <Sparkles className="w-4 h-4 text-brand-yellow" />
-                  Cotiza tu fiesta
+                  Cotiza tu evento
                 </a>
               </div>
             </motion.div>

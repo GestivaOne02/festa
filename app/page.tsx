@@ -38,10 +38,10 @@ export default function Home() {
         <Testimonials />
 
         {/* 7. Final Call to Action Banner */}
-        <section className="py-10 md:py-20 bg-brand-cream relative">
+        <section className="py-10 md:py-20 bg-dark-bg relative">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="bg-gradient-to-r from-brand-orange to-brand-yellow-dark text-white rounded-[3rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6"
+              className="bg-gradient-to-r from-primary-gold to-primary-gold-dark text-white rounded-[3rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -52,7 +52,7 @@ export default function Home() {
               <div className="absolute bottom-6 right-6 text-2xl opacity-30 select-none">✨</div>
 
               <span className="inline-flex items-center gap-1.5 bg-white/20 text-white font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-                <Sparkles className="w-3.5 h-3.5 fill-brand-yellow text-brand-yellow" />
+                <Sparkles className="w-3.5 h-3.5 fill-primary-gold text-primary-gold" />
                 Tu próximo evento sin preocupaciones
               </span>
 
@@ -68,7 +68,7 @@ export default function Home() {
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
                   href="#cotizador"
-                  className="w-full sm:w-auto bg-brand-brown text-brand-yellow hover:bg-brand-brown-dark font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 text-sm"
+                  className="w-full sm:w-auto bg-secondary-white text-primary-gold hover:bg-secondary-white-dark font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 text-sm"
                 >
                   <span>Empieza a Cotizar</span>
                   <ArrowRight className="w-4 h-4" />
