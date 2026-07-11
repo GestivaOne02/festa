@@ -582,34 +582,7 @@ export default function Configurator() {
                   </span>
                 </div>
 
-                <div className="border-t-2 border-dashed border-dark-bg/10 pt-8 pb-4 flex justify-center">
-                  {/* Fake Barcode SVG */}
-                  <svg width="200" height="50" viewBox="0 0 200 50">
-                    <rect x="0" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="8" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="14" y="0" width="6" height="50" fill="#0F0F10"/>
-                    <rect x="24" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="30" y="0" width="8" height="50" fill="#0F0F10"/>
-                    <rect x="42" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="50" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="56" y="0" width="10" height="50" fill="#0F0F10"/>
-                    <rect x="70" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="78" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="84" y="0" width="6" height="50" fill="#0F0F10"/>
-                    <rect x="94" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="102" y="0" width="8" height="50" fill="#0F0F10"/>
-                    <rect x="114" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="120" y="0" width="6" height="50" fill="#0F0F10"/>
-                    <rect x="130" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="138" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="144" y="0" width="10" height="50" fill="#0F0F10"/>
-                    <rect x="158" y="0" width="4" height="50" fill="#0F0F10"/>
-                    <rect x="166" y="0" width="2" height="50" fill="#0F0F10"/>
-                    <rect x="172" y="0" width="6" height="50" fill="#0F0F10"/>
-                    <rect x="182" y="0" width="8" height="50" fill="#0F0F10"/>
-                    <rect x="194" y="0" width="6" height="50" fill="#0F0F10"/>
-                  </svg>
-                </div>
+                <div className="border-t-2 border-dashed border-dark-bg/10 pt-4" />
 
                 {/* Quote Submission Mockup */}
                 <AnimatePresence mode="wait">
@@ -1092,34 +1065,7 @@ export default function Configurator() {
                         </span>
                       </div>
 
-                      <div className="border-t-2 border-dashed border-dark-bg/10 pt-6 pb-2 flex justify-center">
-                        {/* Fake Barcode SVG */}
-                        <svg width="150" height="35" viewBox="0 0 200 50">
-                          <rect x="0" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="8" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="14" y="0" width="6" height="50" fill="#0F0F10"/>
-                          <rect x="24" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="30" y="0" width="8" height="50" fill="#0F0F10"/>
-                          <rect x="42" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="50" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="56" y="0" width="10" height="50" fill="#0F0F10"/>
-                          <rect x="70" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="78" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="84" y="0" width="6" height="50" fill="#0F0F10"/>
-                          <rect x="94" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="102" y="0" width="8" height="50" fill="#0F0F10"/>
-                          <rect x="114" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="120" y="0" width="6" height="50" fill="#0F0F10"/>
-                          <rect x="130" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="138" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="144" y="0" width="10" height="50" fill="#0F0F10"/>
-                          <rect x="158" y="0" width="4" height="50" fill="#0F0F10"/>
-                          <rect x="166" y="0" width="2" height="50" fill="#0F0F10"/>
-                          <rect x="172" y="0" width="6" height="50" fill="#0F0F10"/>
-                          <rect x="182" y="0" width="8" height="50" fill="#0F0F10"/>
-                          <rect x="194" y="0" width="6" height="50" fill="#0F0F10"/>
-                        </svg>
-                      </div>
+                      <div className="border-t-2 border-dashed border-dark-bg/10 pt-2" />
 
                       {/* Submission Form mobile */}
                       <AnimatePresence mode="wait">
