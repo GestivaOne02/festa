@@ -78,13 +78,17 @@ export default function Footer() {
           <div className="col-span-6 md:col-span-4 space-y-3">
             <h4 className="font-heading text-xs md:text-base font-bold text-primary-gold uppercase tracking-wider md:normal-case">Contacto</h4>
             <ul className="space-y-2.5 text-xs md:text-sm text-dark-bg/75 font-light">
-              <li className="flex items-start gap-2">
-                <Phone className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
-                <span>+57 317 3823814</span>
+              <li>
+                <a href="tel:+573173823814" className="flex items-start gap-2 hover:text-primary-gold transition-colors">
+                  <Phone className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
+                  <span>+57 317 3823814</span>
+                </a>
               </li>
-              <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
-                <span className="break-all">gustavoadolfogrisalesmercado@gmail.com</span>
+              <li>
+                <a href="mailto:gustavoadolfogrisalesmercado@gmail.com" className="flex items-start gap-2 hover:text-primary-gold transition-colors">
+                  <Mail className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
+                  <span className="break-all">gustavoadolfogrisalesmercado@gmail.com</span>
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-primary-gold shrink-0 mt-0.5" />
