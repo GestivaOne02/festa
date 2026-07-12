@@ -56,6 +56,11 @@ export default function Configurator() {
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("");
 
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Reservation states
   const [bookingDate, setBookingDate] = useState("");
   const [bookingTime, setBookingTime] = useState("");
@@ -262,7 +267,7 @@ export default function Configurator() {
 
   // Generate receipt ID based on current config
   const receiptId = `FESTA-${guests.toString().padStart(3,'0')}-${hours.toString().padStart(2,'0')}`;
-  const today = new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  const today = isMounted ? new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : "";
 
   return (
     <section id="cotizador" className="pt-14 pb-8 lg:py-20 bg-secondary-white/[0.02] relative">
