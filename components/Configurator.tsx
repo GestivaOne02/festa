@@ -526,7 +526,7 @@ export default function Configurator() {
           {/* ============================================================== */}
           {/* PREMIUM RECEIPT / INVOICE - Right side (col-span-5)           */}
           {/* ============================================================== */}
-          <div className="col-span-5 sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="col-span-5 sticky top-24">
 
             {/* Receipt Paper */}
             <div className="relative">
