@@ -7,7 +7,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Check, Clock, Users, ArrowRight, X, Sparkles, MapPin, ChefHat, UtensilsCrossed, Armchair, Star } from "lucide-react";
 import { supabase, getEnterpriseCompanyId } from "@/lib/supabase";
-
+import DatePicker from "react-datepicker";
+import { es } from "date-fns/locale/es";
+import { format, parse } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
 type DbProduct = {
   id: string;
   name: string;
@@ -701,21 +704,29 @@ export default function Configurator() {
                         <div className="grid grid-cols-2 gap-3">
                           <div className="space-y-1">
                             <label className="text-[9px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Fecha</label>
-                            <input
-                              type="date"
+                            <DatePicker
+                              selected={bookingDate ? new Date(bookingDate + "T12:00:00") : null}
+                              onChange={(date) => setBookingDate(date ? format(date, "yyyy-MM-dd") : "")}
+                              locale={es}
+                              dateFormat="dd/MM/yyyy"
+                              placeholderText="dd/mm/aaaa"
+                              minDate={new Date()}
                               required
-                              value={bookingDate}
-                              onChange={(e) => setBookingDate(e.target.value)}
                               className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
                             />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[9px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Hora inicio</label>
-                            <input
-                              type="time"
+                            <DatePicker
+                              selected={bookingTime ? parse(bookingTime, "HH:mm", new Date()) : null}
+                              onChange={(date) => setBookingTime(date ? format(date, "HH:mm") : "")}
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={30}
+                              timeCaption="Hora"
+                              dateFormat="HH:mm"
+                              placeholderText="--:-- ----"
                               required
-                              value={bookingTime}
-                              onChange={(e) => setBookingTime(e.target.value)}
                               className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
                             />
                           </div>
@@ -1217,21 +1228,29 @@ export default function Configurator() {
                               <div className="grid grid-cols-2 gap-2 text-left">
                                 <div className="space-y-1">
                                   <label className="text-[8px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Fecha</label>
-                                  <input
-                                    type="date"
+                                  <DatePicker
+                                    selected={bookingDate ? new Date(bookingDate + "T12:00:00") : null}
+                                    onChange={(date) => setBookingDate(date ? format(date, "yyyy-MM-dd") : "")}
+                                    locale={es}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="dd/mm/aaaa"
+                                    minDate={new Date()}
                                     required
-                                    value={bookingDate}
-                                    onChange={(e) => setBookingDate(e.target.value)}
                                     className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
                                   />
                                 </div>
                                 <div className="space-y-1">
                                   <label className="text-[8px] font-body font-bold text-dark-bg/50 block tracking-widest uppercase">Hora inicio</label>
-                                  <input
-                                    type="time"
+                                  <DatePicker
+                                    selected={bookingTime ? parse(bookingTime, "HH:mm", new Date()) : null}
+                                    onChange={(date) => setBookingTime(date ? format(date, "HH:mm") : "")}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={30}
+                                    timeCaption="Hora"
+                                    dateFormat="HH:mm"
+                                    placeholderText="--:-- ----"
                                     required
-                                    value={bookingTime}
-                                    onChange={(e) => setBookingTime(e.target.value)}
                                     className="w-full px-3 py-2.5 bg-dark-bg/[0.04] border border-dark-bg/15 focus:border-primary-gold focus:outline-none text-dark-bg text-xs transition-colors rounded-none font-body"
                                   />
                                 </div>
