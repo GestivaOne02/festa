@@ -33,13 +33,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream flex flex-col justify-between py-10 relative overflow-hidden">
+    <div className="min-h-screen bg-dark-bg flex flex-col justify-between py-10 relative overflow-hidden font-body text-secondary-white">
       
       {/* Back to Home button */}
       <div className="absolute top-6 left-6 z-10">
         <Link
           href="/"
-          className="flex items-center gap-2 text-brand-brown hover:text-brand-orange font-bold text-sm transition-colors bg-brand-orange/5 hover:bg-brand-orange/10 px-4 py-2 rounded-full border border-brand-orange/10"
+          className="flex items-center gap-2 text-white/70 hover:text-white text-xs tracking-widest uppercase transition-colors px-4 py-2 border border-white/20 hover:border-white/40 bg-white/5"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Volver al inicio</span>
@@ -47,20 +47,20 @@ export default function Login() {
       </div>
 
       {/* Floating decorative elements */}
-      <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-brand-yellow/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute bottom-[-50px] left-[-50px] w-64 h-64 bg-brand-orange/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute top-[-100px] right-[-100px] w-64 h-64 bg-primary-gold/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-100px] left-[-100px] w-80 h-80 bg-primary-gold/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Centered Login Card */}
-      <div className="flex-grow flex items-center justify-center px-4 sm:px-6">
+      <div className="flex-grow flex items-center justify-center px-4 sm:px-6 relative z-10">
         <motion.div
-          className="w-full max-w-[460px] bg-brand-cream border border-brand-orange/10 p-8 sm:p-10 rounded-[2.5rem] shadow-xl space-y-8"
+          className="w-full max-w-[460px] bg-white/[0.03] backdrop-blur-md border border-white/10 p-8 sm:p-12 rounded-none shadow-2xl space-y-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
         >
           
           {/* Logo Center */}
-          <div className="flex justify-center pb-2">
+          <div className="flex justify-center pb-2 opacity-90">
             <Link href="/">
               <Logo />
             </Link>
@@ -68,23 +68,23 @@ export default function Login() {
 
           {/* Form Header */}
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-heading text-brand-brown font-bold">
+            <h1 className="text-2xl sm:text-3xl font-heading text-white font-bold tracking-wide">
               ¡Hola de nuevo!
             </h1>
-            <p className="text-sm text-brand-brown/70 font-light">
+            <p className="text-sm text-white/60 font-light">
               Ingresa tus datos para gestionar tus cotizaciones y fiestas.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label htmlFor="email" className="text-xs font-semibold text-brand-brown/85 block">
+              <label htmlFor="email" className="text-[10px] font-bold text-white/70 uppercase tracking-widest block">
                 Correo electrónico
               </label>
               <div className="relative">
-                <Mail className="w-5 h-5 text-brand-brown/40 absolute left-4 top-3.5" />
+                <Mail className="w-5 h-5 text-white/40 absolute left-4 top-3.5" />
                 <input
                   id="email"
                   type="email"
@@ -92,7 +92,7 @@ export default function Login() {
                   placeholder="ejemplo@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-brand-orange/[0.02] border border-brand-orange/15 focus:border-brand-orange focus:bg-white rounded-2xl focus:outline-none placeholder-brand-brown/40 text-brand-brown text-sm transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-black/20 border border-white/10 focus:border-primary-gold focus:bg-black/40 rounded-none focus:outline-none placeholder-white/30 text-white text-sm transition-all font-light"
                 />
               </div>
             </div>
@@ -100,7 +100,7 @@ export default function Login() {
             {/* Password Field */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label htmlFor="password" className="text-xs font-semibold text-brand-brown/85 block">
+                <label htmlFor="password" className="text-[10px] font-bold text-white/70 uppercase tracking-widest block">
                   Contraseña
                 </label>
                 <a
@@ -109,13 +109,13 @@ export default function Login() {
                     e.preventDefault();
                     alert("Enlace para restablecer contraseña simulado.");
                   }}
-                  className="text-xs text-brand-orange hover:underline font-medium"
+                  className="text-[10px] text-primary-gold hover:text-white transition-colors uppercase tracking-wider"
                 >
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
               <div className="relative">
-                <Lock className="w-5 h-5 text-brand-brown/40 absolute left-4 top-3.5" />
+                <Lock className="w-5 h-5 text-white/40 absolute left-4 top-3.5" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -123,12 +123,12 @@ export default function Login() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3.5 bg-brand-orange/[0.02] border border-brand-orange/15 focus:border-brand-orange focus:bg-white rounded-2xl focus:outline-none placeholder-brand-brown/40 text-brand-brown text-sm transition-all"
+                  className="w-full pl-12 pr-12 py-3.5 bg-black/20 border border-white/10 focus:border-primary-gold focus:bg-black/40 rounded-none focus:outline-none placeholder-white/30 text-white text-sm transition-all font-light"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="p-1 rounded-full text-brand-brown/40 hover:text-brand-orange hover:bg-brand-orange/10 absolute right-4 top-3.5 focus:outline-none transition-colors"
+                  className="p-1 text-white/40 hover:text-primary-gold absolute right-4 top-3.5 focus:outline-none transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -139,7 +139,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 group disabled:opacity-75 disabled:cursor-wait"
+              className="w-full bg-primary-gold hover:bg-[#a88d6a] text-white font-bold py-4 rounded-none shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group disabled:opacity-75 disabled:cursor-wait tracking-widest uppercase text-xs"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -150,7 +150,7 @@ export default function Login() {
           </form>
 
           {/* Create account suggestion */}
-          <div className="text-center text-xs text-brand-brown/70">
+          <div className="text-center text-xs text-white/60">
             ¿Aún no tienes cuenta?{" "}
             <a
               href="#"
@@ -158,7 +158,7 @@ export default function Login() {
                 e.preventDefault();
                 alert("Creación de cuenta simulada.");
               }}
-              className="text-brand-orange hover:underline font-bold"
+              className="text-primary-gold hover:text-white transition-colors font-bold"
             >
               Crear cuenta ahora
             </a>
@@ -168,7 +168,7 @@ export default function Login() {
       </div>
 
       {/* Footer text */}
-      <div className="text-center text-xs text-brand-brown/50 px-4">
+      <div className="text-center text-[10px] text-white/40 px-4 tracking-widest relative z-10 uppercase">
         © {new Date().getFullYear()} Fiesta. Todos los derechos reservados.
       </div>
 
