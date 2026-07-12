@@ -46,8 +46,8 @@ export default function Configurator() {
   const [includeChefs, setIncludeChefs] = useState(false);
   const [chefCount, setChefCount] = useState(1);
 
-  const [includeUtensils, setIncludeUtensils] = useState(true);
-  const [includeFurniture, setIncludeFurniture] = useState(true);
+  const [includeUtensils, setIncludeUtensils] = useState(false);
+  const [includeFurniture, setIncludeFurniture] = useState(false);
   const [includeSpace, setIncludeSpace] = useState(false);
   const [includeCatering, setIncludeCatering] = useState(false);
 
